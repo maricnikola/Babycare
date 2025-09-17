@@ -1,5 +1,6 @@
 package com.ftn.sbnz.model.models;
 
+import com.ftn.sbnz.model.models.enums.Disease;
 import com.ftn.sbnz.model.models.enums.TreatmentType;
 import lombok.Data;
 
@@ -12,7 +13,7 @@ public class Diagnosis {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
-    public String name;
+    public Disease disease;
     public Date date;
     public Integer threshold;
 }
