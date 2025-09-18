@@ -2,6 +2,7 @@ package com.ftn.sbnz.service;
 
 import java.util.Arrays;
 
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -18,20 +19,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication
 @EntityScan(basePackages = "com.ftn.sbnz.model")
 @EnableJpaRepositories(basePackages = "com.ftn.sbnz.service")
-public class ServiceApplication  {
+public class ServiceApplication  implements CommandLineRunner {
 	
-	private static Logger log = LoggerFactory.getLogger(ServiceApplication.class);
 	public static void main(String[] args) {
-		ApplicationContext ctx = SpringApplication.run(ServiceApplication.class, args);
-
-		String[] beanNames = ctx.getBeanDefinitionNames();
-		Arrays.sort(beanNames);
-
-		StringBuilder sb = new StringBuilder("Application beans:\n");
-		for (String beanName : beanNames) {
-			sb.append(beanName + "\n");
-		}
-		log.info(sb.toString());
+				SpringApplication.run(ServiceApplication.class, args);
 	}
 
 	@Bean
@@ -43,12 +34,9 @@ public class ServiceApplication  {
 		kScanner.start(1000);
 		return kContainer;
 	}
-	
-	/*
-	 * KieServices ks = KieServices.Factory.get(); KieContainer kContainer =
-	 * ks.newKieContainer(ks.newReleaseId("drools-spring-v2",
-	 * "drools-spring-v2-kjar", "0.0.1-SNAPSHOT")); KieScanner kScanner =
-	 * ks.newKieScanner(kContainer); kScanner.start(10_000); KieSession kSession =
-	 * kContainer.newKieSession();
-	 */
+
+	@Override
+	public void run(String... args) throws Exception{
+		Test.main();
+	}
 }

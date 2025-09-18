@@ -1,0 +1,26 @@
+package test;
+import com.ftn.sbnz.model.models.Baby;
+import com.ftn.sbnz.model.models.Examination;
+import com.ftn.sbnz.model.models.enums.VaccinationType;
+
+rule "Second dose Euvax B at 2 months"
+    when
+        $b: Baby(
+            getAgeInDays() == 30,
+            hasVaccination(VaccinationType.EUVAX_B)
+        )
+        $e: Examination(
+            (getWeight() - $b.getWeight()) >= 0.6,
+            (getWeight() - $b.getWeight()) <= 0.8,
+            (getHeight() - $b.getHeight()) >= 1.5,
+            (getHeight() - $b.getHeight()) <= 2.0,
+            getTemperature() <= 37.0,
+            getHeartRate() <=180,
+            getHeartRate() >=120,
+            getRespirationRate() <=48
+        ) from $b.getLastExamination()
+
+    then
+        System.out.println("Baby " + $b.firstName + " " + $b.lastName + " is ready for second dose of Euvax B.");
+//        $b.getVaccinations().add(VaccinationType.EUVAX_B);
+end
