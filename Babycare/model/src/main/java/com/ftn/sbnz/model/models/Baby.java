@@ -4,6 +4,7 @@ import com.ftn.sbnz.model.models.enums.Gender;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class Baby {
     private Long id;
     public String firstName;
     public String lastName;
-    public Date birthDate;
+    public LocalDate birthDate;
     public Gender gender;
     public Double height;
     public Double weight;

@@ -4,6 +4,7 @@ import com.ftn.sbnz.model.models.enums.ExaminationType;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -13,7 +14,7 @@ public class Examination {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
-    public Date examDate;
+    public LocalDate examDate;
     public ExaminationType examinationType;
     public Double weight;
     public Double height;

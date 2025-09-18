@@ -5,6 +5,7 @@ import com.ftn.sbnz.model.models.enums.TreatmentType;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -14,6 +15,6 @@ public class Diagnosis {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
     public Disease disease;
-    public Date date;
+    public LocalDate date;
     public Integer threshold;
 }
