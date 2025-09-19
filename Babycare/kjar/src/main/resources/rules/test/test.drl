@@ -1,26 +1,145 @@
 package test;
 import com.ftn.sbnz.model.models.Baby;
 import com.ftn.sbnz.model.models.Examination;
+import com.ftn.sbnz.model.models.Diagnosis;
+import com.ftn.sbnz.model.dtos.ExaminationDTO;
 import com.ftn.sbnz.model.models.enums.VaccinationType;
+import com.ftn.sbnz.model.models.Symptom
+import com.ftn.sbnz.model.models.enums.SymptomName
+import com.ftn.sbnz.model.models.Vaccination
+import java.time.LocalDate
+import java.util.ArrayList;
 
-rule "Second dose Euvax B at 2 months"
-    when
-        $b: Baby(
-            getAgeInDays() == 30,
-            hasVaccination(VaccinationType.EUVAX_B)
-        )
-        $e: Examination(
-            (getWeight() - $b.getWeight()) >= 0.6,
-            (getWeight() - $b.getWeight()) <= 0.8,
-            (getHeight() - $b.getHeight()) >= 1.5,
-            (getHeight() - $b.getHeight()) <= 2.0,
-            getTemperature() <= 37.0,
-            getHeartRate() <=180,
-            getHeartRate() >=120,
-            getRespirationRate() <=48
-        ) from $b.getLastExamination()
+//rule "Second dose Euvax B at 2 months"
+//    when
+//        $b: Baby(
+//            getAgeInDays() == 30,
+//            hasVaccination(VaccinationType.EUVAX_B)
+//        )
+//        $e: Examination(
+//            (getWeight() - $b.getWeight()) >= 0.6,
+//            (getWeight() - $b.getWeight()) <= 0.8,
+//            (getHeight() - $b.getHeight()) >= 1.5,
+//            (getHeight() - $b.getHeight()) <= 2.0,
+//            getTemperature() <= 37.0,
+//            getHeartRate() <=180,
+//            getHeartRate() >=120,
+//            getRespirationRate() <=48
+//        ) from $b.getLastExamination()
+//
+//    then
+//        System.out.println("Baby " + $b.firstName + " " + $b.lastName + " is ready for second dose of Euvax B.");
+////        $b.getVaccinations().add(VaccinationType.EUVAX_B);
+//end
 
-    then
-        System.out.println("Baby " + $b.firstName + " " + $b.lastName + " is ready for second dose of Euvax B.");
-//        $b.getVaccinations().add(VaccinationType.EUVAX_B);
+
+//rule "Diagnosis"
+//when
+//    $b: Baby(getFirstName() == "Vlada")
+//then
+//    Baby b = new Baby();
+//    b.setExaminations(new ArrayList<>());
+//    insert(b);
+//    System.out.println("Hello from dijagnoza");
+//end
+
+rule "Check Baby Weight and Height"
+//salience 100
+when
+    $b : Baby()
+    $e : Examination(
+        (getWeight() - $b.getWeight()) < 0.6 ||
+        (getHeight() - $b.getHeight()) < 1.5
+    ) from $b.getLastExamination()
+then
+    Symptom s = new Symptom(null, SymptomName.FAILURE_TO_THRIVE, 4L, 1);
+    java.util.List<Symptom> updated = new java.util.ArrayList<>($e.getSymptoms());
+    updated.add(s);
+
+    modify($e) {  setSymptoms(updated) }
+
+    System.out.println("Baby " + $b.getFirstName() + " " + $b.getLastName() + " has failure to thrive.");
 end
+
+rule "Check if Baby has Mild Temperature"
+when
+    $e : Examination(
+       getTemperature() > 37.0 &&
+       getTemperature() <= 37.5)
+then
+    Symptom s = new Symptom(null, SymptomName.MILD_FEVER, 5L, 1);
+    java.util.List<Symptom> updated = new java.util.ArrayList<>($e.getSymptoms());
+    updated.add(s);
+
+    modify($e) {  setSymptoms(updated) }
+
+    System.out.println("Baby " + $e.getBaby().getFirstName() + " " + $e.getBaby().getLastName() + " has mild fever.");
+end
+
+rule "Check if Baby has Moderate Temperature"
+when
+    $e : Examination(
+       getTemperature() > 37.5 &&
+       getTemperature() <= 38.5)
+then
+    Symptom s = new Symptom(null, SymptomName.MODERATE_FEVER, 5L, 1);
+    java.util.List<Symptom> updated = new java.util.ArrayList<>($e.getSymptoms());
+    updated.add(s);
+
+    modify($e) {  setSymptoms(updated) }
+
+    System.out.println("Baby " + $e.getBaby().getFirstName() + " " + $e.getBaby().getLastName() + " has moderate fever.");
+end
+
+rule "Check if Baby has High Temperature"
+when
+    $e : Examination(
+       getTemperature() > 38.5)
+then
+    Symptom s = new Symptom(null, SymptomName.HIGH_FEVER, 5L, 1);
+    java.util.List<Symptom> updated = new java.util.ArrayList<>($e.getSymptoms());
+    updated.add(s);
+
+    modify($e) {  setSymptoms(updated) }
+
+    System.out.println("Baby " + $e.getBaby().getFirstName() + " " + $e.getBaby().getLastName() + " has high fever.");
+end
+
+rule "Check Baby Heart Rate"
+when
+    $e : Examination(
+        getHeartRate() > 180)
+then
+    Symptom s = new Symptom(null, SymptomName.TACHYCARDIA, 4L, 1);
+    java.util.List<Symptom> updated = new java.util.ArrayList<>($e.getSymptoms());
+    updated.add(s);
+
+    modify($e) {  setSymptoms(updated) }
+
+    System.out.println("Baby " + $e.getBaby().getFirstName() + " " + $e.getBaby().getLastName() + " has tahicardia.");
+end
+
+
+rule "Second Dose Euvax B and BCG After 1 Month"
+when
+    $b: Baby()
+    $e: Examination(symptoms.isEmpty()) from $b.getLastExamination()
+then
+    Vaccination vaccination = new Vaccination(null, VaccinationType.EUVAX_B, LocalDate.now(), 2);
+    java.util.List<Vaccination> updated = new java.util.ArrayList<>($b.getVaccinations());
+    updated.add(vaccination);
+//    insert(vaccination)
+    modify($b){ setVaccinations(updated) }
+
+    System.out.println("Baby " + $b.firstName + " " + $b.lastName + " is ready for second dose of Euvax B vaccination.");
+end
+
+//rule "Test"
+//when
+//    $b: Baby(getFirstName() == "Nikola")
+//then
+//    modify($b){ setFirstName("Vlada")}
+////    Diagnosis d = new Diagnosis();
+////    insert(d);
+//    System.out.println("Test");
+//end

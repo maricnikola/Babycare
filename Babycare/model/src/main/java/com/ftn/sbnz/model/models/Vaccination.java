@@ -22,5 +22,4 @@ public class Vaccination {
     public VaccinationType vaccineName;
     public LocalDate date;
     public Integer dose;
-    public Boolean isVaccinated;
 }

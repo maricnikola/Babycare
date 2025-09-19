@@ -1,10 +1,8 @@
-package com.ftn.sbnz.service;
+package com.ftn.sbnz;
 
-import java.util.Arrays;
-
+import com.ftn.sbnz.service.Test;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieScanner;
@@ -12,13 +10,11 @@ import org.kie.api.runtime.KieContainer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @EntityScan(basePackages = "com.ftn.sbnz.model")
-@EnableJpaRepositories(basePackages = "com.ftn.sbnz.service")
+@EnableJpaRepositories(basePackages = "com.ftn.sbnz")
 public class ServiceApplication  implements CommandLineRunner {
 	
 	public static void main(String[] args) {
@@ -32,7 +28,8 @@ public class ServiceApplication  implements CommandLineRunner {
 				.newKieContainer(ks.newReleaseId("com.ftn.sbnz", "kjar", "0.0.1-SNAPSHOT"));
 		KieScanner kScanner = ks.newKieScanner(kContainer);
 		kScanner.start(1000);
-		return kContainer;
+		KieContainer kieContainer = ks.getKieClasspathContainer();
+		return kieContainer;
 	}
 
 	@Override
