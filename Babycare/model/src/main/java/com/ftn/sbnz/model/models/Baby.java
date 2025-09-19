@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class Baby {
     private List<Diagnosis> Diagnoses;
 
     @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    private List<Vaccination> vaccinations;
+    private List<Vaccination> vaccinations = new ArrayList<>();
 
     @OneToMany
     private List<Examination> examinations;

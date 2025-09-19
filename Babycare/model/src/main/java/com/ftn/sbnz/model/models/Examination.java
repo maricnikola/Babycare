@@ -5,6 +5,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,9 +23,10 @@ public class Examination {
     public Integer heartRate;
     public Integer respirationRate;
     public Double headCircumference;
-
+    @ManyToOne
+    public Baby baby;
     @OneToMany
-    public List<Symptom> symptoms;
+    public List<Symptom> symptoms = new ArrayList<>();
     @OneToMany
     public List<Report> reports;
 }
