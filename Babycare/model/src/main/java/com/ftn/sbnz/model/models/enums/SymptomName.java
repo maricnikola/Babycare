@@ -8,5 +8,11 @@ public enum SymptomName {
     COUGH,
     FAILURE_TO_THRIVE,
     VOMITING,
-    TACHYCARDIA
+    TACHYCARDIA,
+
+    DYSPNEA,
+    FATIGUE,
+    WHEEZING,
+    CHEST_PAIN,
+    PROLONGED_EXPIRATION
 }

@@ -1,1 +1,43 @@
 package backward;
+import com.ftn.sbnz.model.models.Examination;
+import com.ftn.sbnz.model.models.Symptom;
+import com.ftn.sbnz.model.models.enums.SymptomName;
+
+query HasDyspnea( Examination $e )
+    $s : Symptom(name == SymptomName.DYSPNEA) from $e.symptoms
+end
+
+query HasPaleSkin( Examination $e )
+    $s : Symptom(name == SymptomName.PALE_SKIN) from $e.symptoms
+end
+
+query HasTachycardia( Examination $e )
+    $s : Symptom(name == SymptomName.TACHYCARDIA) from $e.symptoms
+end
+
+query IsFatigue( Examination $e )
+    $s : Symptom(name == SymptomName.FATIGUE) from $e.symptoms
+end
+
+query HasCough( Examination $e )
+    $s : Symptom(name == SymptomName.COUGH) from $e.symptoms
+end
+
+query HasFever( Examination $e )
+    $s : Symptom(name == SymptomName.MILD_FEVER
+              || name == SymptomName.MODERATE_FEVER
+              || name == SymptomName.HIGH_FEVER) from $e.symptoms
+end
+
+query HasWheezing( Examination $e )
+    $s : Symptom(name == SymptomName.WHEEZING) from $e.symptoms
+end
+
+query HasProlongedExpiration( Examination $e )
+    $s : Symptom(name == SymptomName.PROLONGED_EXPIRATION) from $e.symptoms
+end
+
+query HasChestPain( Examination $e )
+    $s : Symptom(name == SymptomName.CHEST_PAIN) from $e.symptoms
+end
+
