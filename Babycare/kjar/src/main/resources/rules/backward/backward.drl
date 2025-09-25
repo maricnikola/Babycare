@@ -2,42 +2,32 @@ package backward;
 import com.ftn.sbnz.model.models.Examination;
 import com.ftn.sbnz.model.models.Symptom;
 import com.ftn.sbnz.model.models.enums.SymptomName;
+import com.ftn.sbnz.model.models.Diagnosis;
+import com.ftn.sbnz.model.models.Location;
+import com.ftn.sbnz.model.models.enums.Disease;
+import java.util.List;
 
-query HasDyspnea( Examination $e )
-    $s : Symptom(name == SymptomName.DYSPNEA) from $e.symptoms
+query isContainedIn( SymptomName x, SymptomName y, Examination e)
+  Location( x, y; )
+  or
+  ( Location( z, y; ) and isContainedIn( x, z, e; ) )
+  $s1 : Symptom(name == x) from e.symptoms
 end
 
-query HasPaleSkin( Examination $e )
-    $s : Symptom(name == SymptomName.PALE_SKIN) from $e.symptoms
+query Bronhiolitis( Examination $e )
+    isContainedIn( SymptomName.WHEEZING, SymptomName.DYSPNEA, $e; )
 end
 
-query HasTachycardia( Examination $e )
-    $s : Symptom(name == SymptomName.TACHYCARDIA) from $e.symptoms
+query Asthma( Examination $e )
+    isContainedIn( SymptomName.PROLONGED_EXPIRATION, SymptomName.DYSPNEA, $e; )
 end
 
-query IsFatigue( Examination $e )
-    $s : Symptom(name == SymptomName.FATIGUE) from $e.symptoms
+query Pneumonia( Examination $e )
+    isContainedIn( SymptomName.CHEST_PAIN, SymptomName.DYSPNEA, $e; )
 end
 
-query HasCough( Examination $e )
-    $s : Symptom(name == SymptomName.COUGH) from $e.symptoms
+query Anemia( Examination $e )
+    isContainedIn( SymptomName.TACHYCARDIA, SymptomName.DYSPNEA, $e; )
 end
 
-query HasFever( Examination $e )
-    $s : Symptom(name == SymptomName.MILD_FEVER
-              || name == SymptomName.MODERATE_FEVER
-              || name == SymptomName.HIGH_FEVER) from $e.symptoms
-end
-
-query HasWheezing( Examination $e )
-    $s : Symptom(name == SymptomName.WHEEZING) from $e.symptoms
-end
-
-query HasProlongedExpiration( Examination $e )
-    $s : Symptom(name == SymptomName.PROLONGED_EXPIRATION) from $e.symptoms
-end
-
-query HasChestPain( Examination $e )
-    $s : Symptom(name == SymptomName.CHEST_PAIN) from $e.symptoms
-end
 
