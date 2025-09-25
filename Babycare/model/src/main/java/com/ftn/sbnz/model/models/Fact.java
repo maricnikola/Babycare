@@ -1,33 +1,33 @@
 package com.ftn.sbnz.model.models;
 
-import com.ftn.sbnz.model.models.enums.SymptomName;
+//import com.ftn.sbnz.model.models.enums.String;
 import org.kie.api.definition.type.Position;
 
-public class Location {
+public class Fact {
     @Position(0)
-    private SymptomName item;
+    private String item;
 
     @Position(1)
-    private SymptomName location;
+    private String location;
 
-    public Location(SymptomName item, SymptomName location) {
+    public Fact(String item, String location) {
         this.item = item;
         this.location = location;
     }
 
-    public SymptomName getItem() {
+    public String getItem() {
         return item;
     }
 
-    public void setItem(SymptomName item) {
+    public void setItem(String item) {
         this.item = item;
     }
 
-    public SymptomName getLocation() {
+    public String getLocation() {
         return location;
     }
 
-    public void setLocation(SymptomName location) {
+    public void setLocation(String location) {
         this.location = location;
     }
 
@@ -36,10 +36,10 @@ public class Location {
         if (this == o) { return true; }
         if (o == null || getClass() != o.getClass()) { return false; }
 
-        Location location1 = (Location) o;
+        Fact fact1 = (Fact) o;
 
-        if (item != null ? !item.equals(location1.item) : location1.item != null) { return false; }
-        if (location != null ? !location.equals(location1.location) : location1.location != null) { return false; }
+        if (item != null ? !item.equals(fact1.item) : fact1.item != null) { return false; }
+        if (location != null ? !location.equals(fact1.location) : fact1.location != null) { return false; }
 
         return true;
     }
@@ -52,7 +52,7 @@ public class Location {
     }
 
 //    @Override
-//    public SymptomName toSymptomName() {
+//    public String toString() {
 //        return "Location{" +
 //                "item='" + item.name() + '\'' +
 //                ", location='" + location.name() + '\'' +

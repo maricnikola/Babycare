@@ -9,7 +9,7 @@ public enum Disease {
     PROJECTILE_VOMITING("Projectile vomiting"),
     FAILURE_TO_GAIN_WEIGHT("Failure to gain weight"),
     PALLOR("Pallor"),
-    BRONCHIOLITIS("Bronchiolitis"),
+    BRONHIOLITIS("Bronhiolitis"),
     PNEUMONIA("Pneumonia"),
     ASTHMA("Asthma"),
     ANEMIA("Anemia"),
