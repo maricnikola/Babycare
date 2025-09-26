@@ -42,54 +42,53 @@ public class Test {
             kSession.insert( new Fact(SymptomName.CHEST_PAIN.name(), SymptomName.COUGH.name()) );
             kSession.insert( new Fact(Disease.PNEUMONIA.name(), SymptomName.CHEST_PAIN.name()) );
 
-            System.out.println("Hello World");
 
             Examination examination = new Examination();
             examination.getSymptoms().add(new Symptom(1L,SymptomName.FATIGUE,1L,1));
             examination.getSymptoms().add(new Symptom(1L,SymptomName.DYSPNEA,1L,1));
             examination.getSymptoms().add(new Symptom(1L,SymptomName.PALE_SKIN,1L,1));
-            examination.getSymptoms().add(new Symptom(1L,SymptomName.TACHYCARDIA,1L,1));
+//            examination.getSymptoms().add(new Symptom(1L,SymptomName.TACHYCARDIA,1L,1));
             kSession.insert(examination);
 
             List<String> facts = examination.getSymptoms().
                     stream().map( s -> s.getName().name()).
                     collect(Collectors.toList());
 
-//            boolean bronhiolitis = kSession.getQueryResults("Bronhiolitis", facts)
-//                    .iterator()
-//                    .hasNext();
-//            if (bronhiolitis) {
-//                System.out.println("Bronhiolitis found");
-//            } else {
-//                System.out.println("Bronhiolitis not found");
-//            }
-//
-//            boolean asthma = kSession.getQueryResults("Asthma", facts)
-//                    .iterator()
-//                    .hasNext();
-//            if (asthma) {
-//                System.out.println("Asthma found");
-//            } else {
-//                System.out.println("Asthma not found");
-//            }
-//
-//            boolean pneumonia = kSession.getQueryResults("Pneumonia", facts)
-//                    .iterator()
-//                    .hasNext();
-//            if (pneumonia) {
-//                System.out.println("Pneumonia found");
-//            } else {
-//                System.out.println("Pneumonia not found");
-//            }
-//
-//            boolean anemia = kSession.getQueryResults("Anemia", facts)
-//                    .iterator()
-//                    .hasNext();
-//            if (anemia) {
-//                System.out.println("Anemia found");
-//            } else {
-//                System.out.println("Anemia not found");
-//            }
+            boolean bronhiolitis = kSession.getQueryResults(Disease.BRONHIOLITIS.getName(), facts)
+                    .iterator()
+                    .hasNext();
+            if (bronhiolitis) {
+                System.out.println("Bronhiolitis found");
+            } else {
+                System.out.println("Bronhiolitis not found");
+            }
+
+            boolean asthma = kSession.getQueryResults(Disease.ASTHMA.getName(), facts)
+                    .iterator()
+                    .hasNext();
+            if (asthma) {
+                System.out.println("Asthma found");
+            } else {
+                System.out.println("Asthma not found");
+            }
+
+            boolean pneumonia = kSession.getQueryResults(Disease.PNEUMONIA.getName(), facts)
+                    .iterator()
+                    .hasNext();
+            if (pneumonia) {
+                System.out.println("Pneumonia found");
+            } else {
+                System.out.println("Pneumonia not found");
+            }
+
+            boolean anemia = kSession.getQueryResults(Disease.ANEMIA.getName(), facts)
+                    .iterator()
+                    .hasNext();
+            if (anemia) {
+                System.out.println("Anemia found");
+            } else {
+                System.out.println("Anemia not found");
+            }
 
             kSession.fireAllRules();
 

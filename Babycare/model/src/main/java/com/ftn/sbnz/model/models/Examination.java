@@ -25,8 +25,8 @@ public class Examination {
     public Double headCircumference;
     @ManyToOne
     public Baby baby;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.PERSIST)
     public List<Symptom> symptoms = new ArrayList<>();
-    @OneToMany
+    @OneToMany(cascade = CascadeType.PERSIST)
     public List<Report> reports;
 }
