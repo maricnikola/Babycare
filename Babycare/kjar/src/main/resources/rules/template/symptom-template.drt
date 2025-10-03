@@ -1,0 +1,27 @@
+template header
+field
+minValue
+maxValue
+symptomName
+message
+
+package template
+
+import com.ftn.sbnz.model.models.Examination;
+import com.ftn.sbnz.model.models.Baby;
+import com.ftn.sbnz.model.models.Symptom;
+import com.ftn.sbnz.model.models.enums.SymptomName;
+
+template "SymptomRangeCheck"
+rule "Check Baby for @{message}"
+when
+    $e : Examination( @{field} > @{minValue} && @{field} <= @{maxValue} )
+then
+    Symptom s = new Symptom(null, SymptomName.@{symptomName}, 4L, 1);
+    java.util.List<Symptom> updated = new java.util.ArrayList<>($e.getSymptoms());
+    updated.add(s);
+
+    modify($e) { setSymptoms(updated) }
+    System.out.println("Baby " + $e.getBaby().getFirstName() + " " + $e.getBaby().getLastName() + " has @{message}.");
+end
+end template
