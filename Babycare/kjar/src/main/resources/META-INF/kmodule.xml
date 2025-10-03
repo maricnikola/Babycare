@@ -8,4 +8,7 @@
     <kbase name="rules" packages="test">
         <ksession name="test-session"/>
     </kbase>
+    <kbase name="templateKBase" packages="template">
+        <ksession name="template-session"/>
+    </kbase>
 </kmodule>

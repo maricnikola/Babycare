@@ -29,4 +29,10 @@ public class Examination {
     public List<Symptom> symptoms = new ArrayList<>();
     @OneToMany(cascade = CascadeType.PERSIST)
     public List<Report> reports;
+    public Double getWeightDifference(){
+        return weight - baby.getWeight();
+    }
+    public Double getHeightDifference(){
+        return height - baby.getHeight();
+    }
 }

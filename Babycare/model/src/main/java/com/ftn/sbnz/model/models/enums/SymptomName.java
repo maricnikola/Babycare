@@ -9,6 +9,7 @@ public enum SymptomName {
     FAILURE_TO_THRIVE,
     VOMITING,
     TACHYCARDIA,
+    TACHYPNEA,
 
     DYSPNEA,
     FATIGUE,
