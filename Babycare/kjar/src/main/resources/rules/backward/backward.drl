@@ -1,1 +1,36 @@
 package backward;
+import com.ftn.sbnz.model.models.Examination;
+import com.ftn.sbnz.model.models.Symptom;
+import com.ftn.sbnz.model.models.enums.SymptomName;
+import com.ftn.sbnz.model.models.Diagnosis;
+import com.ftn.sbnz.model.models.Fact;
+import com.ftn.sbnz.model.models.enums.Disease;
+import java.util.List;
+import com.ftn.sbnz.model.models.DebugHelper;
+
+query isContainedIn( String x, String y, List facts)
+  Fact( x, y; )
+  or
+  ( Fact( z, y; ) and isContainedIn( x, z, facts; ))
+  eval( facts != null && facts.contains(y) )
+end
+
+query Bronhiolitis( List $facts )
+    isContainedIn( Disease.BRONHIOLITIS.name(), SymptomName.DYSPNEA.name() , $facts; )
+end
+
+query Asthma( List $facts )
+    isContainedIn( Disease.ASTHMA.name(), SymptomName.DYSPNEA.name(), $facts; )
+end
+
+query Pneumonia( List $facts )
+    isContainedIn( Disease.PNEUMONIA.name(), SymptomName.DYSPNEA.name(), $facts; )
+end
+
+query Anemia( List $facts )
+    isContainedIn( Disease.ANEMIA.name(), SymptomName.DYSPNEA.name(), $facts; )
+end
+
+//query debugFacts( List facts )
+//    eval( DebugHelper.print(facts) )
+//end
