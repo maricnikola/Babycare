@@ -28,8 +28,8 @@ public class ExaminationService {
         examination.setTemperature(examinationDTO.getTemperature());
         examination.setHeartRate(examinationDTO.getHeartRate());
         examination.setRespirationRate(examinationDTO.getRespirationRate());
-        examination.setSymptoms(new ArrayList<>());
-        examination.setReports(new ArrayList<>());
+//        examination.setSymptoms(new ArrayList<>());
+//        examination.setReports(new ArrayList<>());
 
         examination.setBaby(baby);
 
@@ -62,6 +62,6 @@ public class ExaminationService {
         kieSession.fireAllRules();
         kieSession.dispose();
 
-        repository.save(examination);
+//        repository.save(examination);
     }
 }

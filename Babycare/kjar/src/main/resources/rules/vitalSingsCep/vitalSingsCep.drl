@@ -1,0 +1,104 @@
+package vitalSingsCep;
+import com.ftn.sbnz.model.models.VitalSigns;
+
+rule "Bradikardija"
+when
+    Number(intValue >=3) from accumulate(
+        $v: VitalSigns(hr<140) over window: time(15s),
+        count($v)
+    )
+then
+    System.out.println("Bradikardija - hitna evaluacija kardiologa + EKG monitoring.");
+end
+
+rule "Donja granica normale HR"
+when
+    Number(intValue >= 3) from accumulate(
+        $v: VitalSigns( hr >= 140 && hr < 180 ) over window:time(15s),
+        count($v)
+    )
+then
+    System.out.println("Potreban pojačani nadzor.");
+end
+
+rule "Normalna frekvencija HR"
+when
+    Number(intValue >= 3) from accumulate(
+        $v: VitalSigns( hr >= 180 && hr <= 200 ) over window:time(15s),
+        count($v)
+    )
+then
+    System.out.println("Standardno praćenje.");
+end
+
+rule "Blaga tahikardija HR"
+when
+    Number(intValue >= 3) from accumulate(
+        $v: VitalSigns( hr > 200 && hr <= 220 ) over window:time(15s),
+        count($v)
+    )
+then
+    System.out.println("Blaga tahikardija - proveriti temperaturu i hidriranost.");
+end
+
+rule "Teška tahikardija HR"
+when
+    Number(intValue >= 3) from accumulate(
+        $v: VitalSigns( hr > 220 ) over window:time(15s),
+        count($v)
+    )
+then
+    System.out.println("Teška tahikardija - urgentna kardiološka evaluacija!");
+end
+
+
+rule "Normalna oksigenacija"
+when
+    Number(intValue >= 3) from accumulate(
+        $v: VitalSigns( spo2 >= 97 ) over window:time(15s),
+        count($v)
+    )
+then
+    System.out.println("Normalna oksigenacija - standardno praćenje.");
+end
+
+rule "Blaga hipoksemija"
+when
+    Number(intValue >= 3) from accumulate(
+        $v: VitalSigns( spo2 > 95 && spo2 < 97 ) over window:time(15s),
+        count($v)
+    )
+then
+    System.out.println("Blaga hipoksemija - optimizacija položaja deteta.");
+end
+
+rule "Umerena hipoksemija"
+when
+    Number(intValue >= 3) from accumulate(
+        $v: VitalSigns( spo2 >= 92 && spo2 < 95 ) over window:time(15s),
+        count($v)
+    )
+then
+    System.out.println("Umerena hipoksemija - uvođenje terapije kiseonikom.");
+end
+
+rule "Teška hipoksemija"
+when
+    Number(intValue >= 3) from accumulate(
+        $v: VitalSigns( spo2 < 92 ) over window:time(15s),
+        count($v)
+    )
+then
+    System.out.println("Teška hipoksemija - URGENTNA medicinska intervencija!");
+end
+
+
+rule "Sumnja na srčanu manu"
+when
+    Number(intValue >= 3) from accumulate(
+        $v: VitalSigns( (hr < 120 || hr > 200), onOxygenTherapy == true ) over window:time(15s),
+        count($v)
+    )
+then
+    System.out.println("Sumnja na srčanu manu, uputiti na ehokardiografiju.");
+end
