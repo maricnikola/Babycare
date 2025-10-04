@@ -1,19 +1,17 @@
 package com.ftn.sbnz.service;
 
-import com.ftn.sbnz.model.models.Examination;
-import com.ftn.sbnz.model.models.Fact;
-import com.ftn.sbnz.model.models.Symptom;
-import com.ftn.sbnz.model.models.VitalSigns;
-import com.ftn.sbnz.model.models.enums.Disease;
-import com.ftn.sbnz.model.models.enums.SymptomName;
+import com.ftn.sbnz.model.events.SymptomEvent;
+import com.ftn.sbnz.model.events.TemperatureEvent;
+import com.ftn.sbnz.model.events.VaccinationEvent;
+import com.ftn.sbnz.model.events.VitalSignsEvent;
+import com.ftn.sbnz.model.events.enums.SymptomType;
+import com.ftn.sbnz.model.events.enums.TemperatureLevel;
 import com.ftn.sbnz.model.util.KnowledgeSessionHelper;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.time.SessionPseudoClock;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 public class Test {
     public static void main(){
@@ -94,17 +92,13 @@ public class Test {
 //            }
 //
 //            kSession.fireAllRules();
-
-
-
-            KieSession k1Session = KnowledgeSessionHelper.getStatefulKnowledgeSession(kc,"vitalSingsCepKsession");
+            KieSession k1Session = KnowledgeSessionHelper.getStatefulKnowledgeSession(kc,"postVaccinationCepKsession");
             SessionPseudoClock pseudoClock = k1Session.getSessionClock();
-            k1Session.insert(new VitalSigns(120,0,false,pseudoClock.getCurrentTime()) );
-            pseudoClock.advanceTime(5, TimeUnit.SECONDS);
-            k1Session.insert(new VitalSigns(120,0,false,pseudoClock.getCurrentTime()) );
-            pseudoClock.advanceTime(5, TimeUnit.SECONDS);
-            k1Session.insert(new VitalSigns(120,0,false,pseudoClock.getCurrentTime()) );
-//            pseudoClock.advanceTime(1, TimeUnit.MINUTES);
+            System.out.println("Hello world");
+            k1Session.insert(new VaccinationEvent(pseudoClock.getCurrentTime()));
+            pseudoClock.advanceTime(25, TimeUnit.HOURS);
+//            k1Session.insert(new SymptomEvent(SymptomType.PAIN, pseudoClock.getCurrentTime()));
+            k1Session.insert(new TemperatureEvent(TemperatureLevel.LOW,pseudoClock.getCurrentTime()));
             k1Session.fireAllRules();
 
         }catch(Throwable t){

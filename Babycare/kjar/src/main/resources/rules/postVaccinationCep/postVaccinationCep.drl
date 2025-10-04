@@ -1,0 +1,158 @@
+package postVaccinationCep;
+import com.ftn.sbnz.model.events.VaccinationEvent;
+import com.ftn.sbnz.model.events.SymptomEvent;
+import com.ftn.sbnz.model.events.TemperatureEvent;
+import com.ftn.sbnz.model.events.DiagnosisEvent;
+import com.ftn.sbnz.model.events.HospitalizationEvent;
+import com.ftn.sbnz.model.events.TherapyEvent;
+
+import com.ftn.sbnz.model.models.Baby;
+
+import com.ftn.sbnz.model.events.enums.SymptomType;
+import com.ftn.sbnz.model.events.enums.TemperatureLevel;
+import com.ftn.sbnz.model.events.enums.DiagnosisType;
+import com.ftn.sbnz.model.events.enums.HospitalizationReason;
+import com.ftn.sbnz.model.events.enums.TherapyType;
+
+// ---------------------- DIAGNOSIS LAYER ----------------------
+rule "Local reaction"
+when
+    $vac: VaccinationEvent()
+    $sym: SymptomEvent( type in (SymptomType.REDNESS, SymptomType.SWELLING, SymptomType.PAIN)
+            ,this after[0h,24h] $vac)
+then
+    System.out.println("Local reaction detected");
+    insert(new DiagnosisEvent(DiagnosisType.LOCAL_REACTION, System.currentTimeMillis()));
+end
+
+rule "Mild reaction"
+when
+    $vac: VaccinationEvent()
+    $temp: TemperatureEvent( level == TemperatureLevel.LOW,
+           this after[0h,24h] $vac
+     )
+then
+    System.out.println("Mild reaction detected");
+    insert(new DiagnosisEvent(DiagnosisType.MILD_REACTION, System.currentTimeMillis()));
+end
+
+rule "Mild prolonged reaction"
+when
+    $vac: VaccinationEvent()
+    $temp: TemperatureEvent( level == TemperatureLevel.LOW,
+           this after[24h,48h] $vac
+     )
+then
+    System.out.println("Mild prolonged reaction detected");
+    insert(new DiagnosisEvent(DiagnosisType.MILD_PROLONGED, System.currentTimeMillis()));
+end
+
+rule "Moderate reaction"
+when
+    $vac: VaccinationEvent()
+    $temp: TemperatureEvent( level == TemperatureLevel.MODERATE,
+           this after[0h,12h] $vac
+     )
+then
+    System.out.println("Moderate reaction detected");
+    insert(new DiagnosisEvent(DiagnosisType.MODERATE_REACTION, System.currentTimeMillis()));
+end
+
+rule "Unusual reaction"
+when
+    $vac: VaccinationEvent()
+    $temp: TemperatureEvent( level == TemperatureLevel.HIGH,
+           this after[0h,24h] $vac
+     )
+then
+    System.out.println("Unusual reaction detected");
+    insert(new DiagnosisEvent(DiagnosisType.UNUSUAL_REACTION, System.currentTimeMillis()));
+end
+
+rule "Serious reaction"
+when
+    $vac: VaccinationEvent()
+    $temp: TemperatureEvent( level == TemperatureLevel.HIGH || level == TemperatureLevel.CRITICAL,
+           this after[24h,48h] $vac
+     )
+then
+    System.out.println("Serious reaction detected");
+    insert(new DiagnosisEvent(DiagnosisType.SERIOUS_REACTION, System.currentTimeMillis()));
+end
+
+rule "Alarming reaction"
+when
+    $vac: VaccinationEvent()
+    $sym: SymptomEvent( type in (SymptomType.CONSCIOUSNESS_CRISIS,SymptomType.COUGH) )
+    $temp: TemperatureEvent(
+        level == TemperatureLevel.HIGH || level == TemperatureLevel.CRITICAL,
+        this after[0h,48h] $vac
+    )
+then
+    System.out.println("!!! ALARMING REACTION - URGENT HOSPITALIZATION REQUIRED !!!");
+    insert(new DiagnosisEvent(DiagnosisType.ALARMING_REACTION, System.currentTimeMillis()));
+    insert(new HospitalizationEvent(HospitalizationReason.ALARMING_REACTION, System.currentTimeMillis()));
+    drools.halt();
+end
+
+//// ---------------------- THERAPY LAYER ----------------------
+
+rule "Therapy for local reaction"
+when
+    DiagnosisEvent( type == DiagnosisType.LOCAL_REACTION )
+then
+    System.out.println("Therapy: Cold compress recommended");
+    insert(new TherapyEvent(TherapyType.COLD_COMPRESS, System.currentTimeMillis()));
+end
+
+rule "Therapy for mild reaction"
+when
+    DiagnosisEvent( type == DiagnosisType.MILD_REACTION )
+then
+    System.out.println("Therapy: Physical measures (light clothing, cool room, fluids)");
+    insert(new TherapyEvent(TherapyType.PHYSICAL_MEASURES, System.currentTimeMillis()));
+end
+
+rule "Therapy for mild prolonged reaction"
+when
+    DiagnosisEvent( type == DiagnosisType.MILD_PROLONGED )
+then
+    System.out.println("Therapy: Single dose of paracetamol");
+    insert(new TherapyEvent(TherapyType.PARACETAMOL_SINGLE_DOSE, System.currentTimeMillis()));
+end
+
+rule "Therapy for moderate reaction - Ibuprofen"
+when
+    $baby: Baby( getAgeInDays() >= 180, getWeight() >= 8 )
+    DiagnosisEvent( type == DiagnosisType.MODERATE_REACTION )
+then
+    System.out.println("Therapy: Ibuprofen 10mg/kg, 3x daily");
+    insert(new TherapyEvent(TherapyType.IBUPROFEN, System.currentTimeMillis()));
+end
+
+rule "Therapy for moderate reaction - Paracetamol"
+when
+    $baby: Baby( getAgeInDays() < 180 || getWeight() < 8 )
+    DiagnosisEvent( type == DiagnosisType.MODERATE_REACTION )
+then
+    System.out.println("Therapy: Paracetamol syrup 10mg/kg, 3x daily");
+    insert(new TherapyEvent(TherapyType.PARACETAMOL_SYRUP, System.currentTimeMillis()));
+end
+
+rule "Therapy for unusual reaction"
+when
+    DiagnosisEvent( type == DiagnosisType.UNUSUAL_REACTION )
+then
+    System.out.println("Therapy: Pediatrician referral + physical measures");
+    insert(new TherapyEvent(TherapyType.PEDIATRICIAN_REFERRAL, System.currentTimeMillis()));
+end
+
+rule "Therapy for serious reaction"
+when
+    DiagnosisEvent( type == DiagnosisType.SERIOUS_REACTION )
+then
+    System.out.println("!!! EMERGENCY CARE REQUIRED !!!");
+    insert(new TherapyEvent(TherapyType.EMERGENCY_CARE, System.currentTimeMillis()));
+    insert(new HospitalizationEvent(HospitalizationReason.SERIOUS_REACTION, System.currentTimeMillis()));
+    drools.halt();
+end

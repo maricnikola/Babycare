@@ -1,10 +1,10 @@
 package vitalSingsCep;
-import com.ftn.sbnz.model.models.VitalSigns;
+import com.ftn.sbnz.model.events.VitalSignsEvent;
 
 rule "Bradikardija"
 when
     Number(intValue >=3) from accumulate(
-        $v: VitalSigns(hr<140) over window: time(15s),
+        $v: VitalSignsEvent(hr<140) over window: time(15s),
         count($v)
     )
 then
@@ -14,7 +14,7 @@ end
 rule "Donja granica normale HR"
 when
     Number(intValue >= 3) from accumulate(
-        $v: VitalSigns( hr >= 140 && hr < 180 ) over window:time(15s),
+        $v: VitalSignsEvent( hr >= 140 && hr < 180 ) over window:time(15s),
         count($v)
     )
 then
@@ -24,7 +24,7 @@ end
 rule "Normalna frekvencija HR"
 when
     Number(intValue >= 3) from accumulate(
-        $v: VitalSigns( hr >= 180 && hr <= 200 ) over window:time(15s),
+        $v: VitalSignsEvent( hr >= 180 && hr <= 200 ) over window:time(15s),
         count($v)
     )
 then
@@ -34,7 +34,7 @@ end
 rule "Blaga tahikardija HR"
 when
     Number(intValue >= 3) from accumulate(
-        $v: VitalSigns( hr > 200 && hr <= 220 ) over window:time(15s),
+        $v: VitalSignsEvent( hr > 200 && hr <= 220 ) over window:time(15s),
         count($v)
     )
 then
@@ -44,7 +44,7 @@ end
 rule "Teška tahikardija HR"
 when
     Number(intValue >= 3) from accumulate(
-        $v: VitalSigns( hr > 220 ) over window:time(15s),
+        $v: VitalSignsEvent( hr > 220 ) over window:time(15s),
         count($v)
     )
 then
@@ -55,7 +55,7 @@ end
 rule "Normalna oksigenacija"
 when
     Number(intValue >= 3) from accumulate(
-        $v: VitalSigns( spo2 >= 97 ) over window:time(15s),
+        $v: VitalSignsEvent( spo2 >= 97 ) over window:time(15s),
         count($v)
     )
 then
@@ -65,7 +65,7 @@ end
 rule "Blaga hipoksemija"
 when
     Number(intValue >= 3) from accumulate(
-        $v: VitalSigns( spo2 > 95 && spo2 < 97 ) over window:time(15s),
+        $v: VitalSignsEvent( spo2 > 95 && spo2 < 97 ) over window:time(15s),
         count($v)
     )
 then
@@ -75,7 +75,7 @@ end
 rule "Umerena hipoksemija"
 when
     Number(intValue >= 3) from accumulate(
-        $v: VitalSigns( spo2 >= 92 && spo2 < 95 ) over window:time(15s),
+        $v: VitalSignsEvent( spo2 >= 92 && spo2 < 95 ) over window:time(15s),
         count($v)
     )
 then
@@ -85,7 +85,7 @@ end
 rule "Teška hipoksemija"
 when
     Number(intValue >= 3) from accumulate(
-        $v: VitalSigns( spo2 < 92 ) over window:time(15s),
+        $v: VitalSignsEvent( spo2 < 92 ) over window:time(15s),
         count($v)
     )
 then
@@ -96,7 +96,7 @@ end
 rule "Sumnja na srčanu manu"
 when
     Number(intValue >= 3) from accumulate(
-        $v: VitalSigns( (hr < 120 || hr > 200), onOxygenTherapy == true ) over window:time(15s),
+        $v: VitalSignsEvent( (hr < 120 || hr > 200), onOxygenTherapy == true ) over window:time(15s),
         count($v)
     )
 then

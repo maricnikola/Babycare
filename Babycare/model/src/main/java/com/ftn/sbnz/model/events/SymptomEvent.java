@@ -1,5 +1,6 @@
-package com.ftn.sbnz.model.models;
+package com.ftn.sbnz.model.events;
 
+import com.ftn.sbnz.model.events.enums.SymptomType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,13 +10,11 @@ import org.kie.api.definition.type.Timestamp;
 
 @Role(Role.Type.EVENT)
 @Timestamp("timestamp")
-@Expires("4m")
+@Expires("48h")
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class VitalSigns {
-    private int hr;
-    private int spo2;
-    private boolean onOxygenTherapy;
+@AllArgsConstructor
+public class SymptomEvent {
+    private SymptomType type;
     private long timestamp;
 }
