@@ -11,100 +11,11 @@ import java.time.LocalDate
 import java.util.ArrayList;
 
 
-//rule "Check Baby Weight and Height"
-//when
-//    $b : Baby()
-//    $e : Examination(
-//        (getWeight() - $b.getWeight()) < 0.6 ||
-//        (getHeight() - $b.getHeight()) < 1.5
-//    ) from $b.getLastExamination()
-//then
-//    Symptom s = new Symptom(null, SymptomName.FAILURE_TO_THRIVE, 4L, 1);
-//    java.util.List<Symptom> updated = new java.util.ArrayList<>($e.getSymptoms());
-//    updated.add(s);
-//
-//    modify($e) {  setSymptoms(updated) }
-//
-//    System.out.println("Baby " + $b.getFirstName() + " " + $b.getLastName() + " has failure to thrive.");
-//end
-//
-//rule "Check if Baby has Mild Temperature"
-//when
-//    $e : Examination(
-//       getTemperature() > 37.0 &&
-//       getTemperature() <= 37.5)
-//then
-//    Symptom s = new Symptom(null, SymptomName.MILD_FEVER, 5L, 1);
-//    java.util.List<Symptom> updated = new java.util.ArrayList<>($e.getSymptoms());
-//    updated.add(s);
-//
-//    modify($e) {  setSymptoms(updated) }
-//
-//    System.out.println("Baby " + $e.getBaby().getFirstName() + " " + $e.getBaby().getLastName() + " has mild fever.");
-//end
-//
-//rule "Check if Baby has Moderate Temperature"
-//when
-//    $e : Examination(
-//       getTemperature() > 37.5 &&
-//       getTemperature() <= 38.5)
-//then
-//    Symptom s = new Symptom(null, SymptomName.MODERATE_FEVER, 5L, 1);
-//    java.util.List<Symptom> updated = new java.util.ArrayList<>($e.getSymptoms());
-//    updated.add(s);
-//
-//    modify($e) {  setSymptoms(updated) }
-//
-//    System.out.println("Baby " + $e.getBaby().getFirstName() + " " + $e.getBaby().getLastName() + " has moderate fever.");
-//end
-//
-//rule "Check if Baby has High Temperature"
-//when
-//    $e : Examination(
-//       getTemperature() > 38.5)
-//then
-//    Symptom s = new Symptom(null, SymptomName.HIGH_FEVER, 5L, 1);
-//    java.util.List<Symptom> updated = new java.util.ArrayList<>($e.getSymptoms());
-//    updated.add(s);
-//
-//    modify($e) {  setSymptoms(updated) }
-//
-//    System.out.println("Baby " + $e.getBaby().getFirstName() + " " + $e.getBaby().getLastName() + " has high fever.");
-//end
-//
-//rule "Check Baby Heart Rate"
-//when
-//    $e : Examination(
-//        getHeartRate() > 180)
-//then
-//    Symptom s = new Symptom(null, SymptomName.TACHYCARDIA, 4L, 1);
-//    java.util.List<Symptom> updated = new java.util.ArrayList<>($e.getSymptoms());
-//    updated.add(s);
-//
-//    modify($e) {  setSymptoms(updated) }
-//
-//    System.out.println("Baby " + $e.getBaby().getFirstName() + " " + $e.getBaby().getLastName() + " has tahicardia.");
-//end
-//
-//rule "Check Baby Respiration Rate"
-//when
-//    $e : Examination(
-//        getRespirationRate() > 48)
-//then
-//    Symptom s = new Symptom(null, SymptomName.TACHYPNEA, 4L, 1);
-//    java.util.List<Symptom> updated = new java.util.ArrayList<>($e.getSymptoms());
-//    updated.add(s);
-//
-//    modify($e) {  setSymptoms(updated) }
-//
-//    System.out.println("Baby " + $e.getBaby().getFirstName() + " " + $e.getBaby().getLastName() + " has tachypnea.");
-//end
 
 rule "Second Dose Euvax B and BCG After 1 Month"
-no-loop
 when
     $b: Baby()
-    $e: Examination(symptoms.isEmpty()) from $b.getLastExamination()
+    $e: Examination(symptoms.isEmpty() && getAgeAtExamDays() >= 29 && getAgeAtExamDays() <= 31)
 then
     Vaccination vaccination = new Vaccination(null, VaccinationType.EUVAX_B, LocalDate.now(), 2);
     java.util.List<Vaccination> updated = new java.util.ArrayList<>($b.getVaccinations());
@@ -114,3 +25,130 @@ then
 
     System.out.println("Baby " + $b.firstName + " " + $b.lastName + " is ready for second dose of Euvax B vaccination.");
 end
+
+rule "First Dose Pentaximm and First Dose Sinflorix After 2 Months"
+when
+    $b: Baby()
+    $e: Examination(symptoms.isEmpty() && getAgeAtExamDays() >= 59 && getAgeAtExamDays() <= 61)
+then
+    Vaccination vaccination = new Vaccination(null, VaccinationType.EUVAX_B, LocalDate.now(), 2);
+    java.util.List<Vaccination> updated = new java.util.ArrayList<>($b.getVaccinations());
+    updated.add(vaccination);
+    modify($b){ setVaccinations(updated) }
+
+    System.out.println("Baby " + $b.firstName + " " + $b.lastName + " is ready for second dose of Euvax B vaccination.");
+end
+
+rule "Second Dose Pentaxim after 3 Months"
+when
+    $b: Baby()
+    $e: Examination(symptoms.isEmpty() && getAgeAtExamDays() >= 99 && getAgeAtExamDays() <= 101)
+then
+    Vaccination vaccination = new Vaccination(null, VaccinationType.EUVAX_B, LocalDate.now(), 2);
+    java.util.List<Vaccination> updated = new java.util.ArrayList<>($b.getVaccinations());
+    updated.add(vaccination);
+    modify($b){ setVaccinations(updated) }
+
+    System.out.println("Baby " + $b.firstName + " " + $b.lastName + " is ready for second dose of Euvax B vaccination.");
+end
+
+rule "Third Dose Pentaxim and Second Dose Sinflorix After 5 Months"
+when
+    $b: Baby()
+    $e: Examination(symptoms.isEmpty() && getAgeAtExamDays() >= 139 && getAgeAtExamDays() <= 141)
+then
+    Vaccination vaccination = new Vaccination(null, VaccinationType.EUVAX_B, LocalDate.now(), 2);
+    java.util.List<Vaccination> updated = new java.util.ArrayList<>($b.getVaccinations());
+    updated.add(vaccination);
+    modify($b){ setVaccinations(updated) }
+
+    System.out.println("Baby " + $b.firstName + " " + $b.lastName + " is ready for second dose of Euvax B vaccination.");
+end
+
+rule "Third Dose Euvax B After 6 Months"
+when
+    $b: Baby()
+    $e: Examination(symptoms.isEmpty() && getAgeAtExamDays() >= 179 && getAgeAtExamDays() <= 181)
+then
+    Vaccination vaccination = new Vaccination(null, VaccinationType.EUVAX_B, LocalDate.now(), 2);
+    java.util.List<Vaccination> updated = new java.util.ArrayList<>($b.getVaccinations());
+    updated.add(vaccination);
+    modify($b){ setVaccinations(updated) }
+
+    System.out.println("Baby " + $b.firstName + " " + $b.lastName + " is ready for second dose of Euvax B vaccination.");
+end
+
+
+rule "Possible Bronchiolitis Detection"
+when
+    $e: Examination($symptoms : symptoms)
+    $totalWeight : Number(intValue > 7) from accumulate(
+        Symptom($w : weight,
+                name == SymptomName.MILD_FEVER ||
+                name == SymptomName.MODERATE_FEVER ||
+                name == SymptomName.TACHYCARDIA ||
+                name == SymptomName.COUGH ||
+                name == SymptomName.WHEEZING ||
+                name == SymptomName.CHEST_PAIN ||
+                name == SymptomName.FATIGUE ||
+                name == SymptomName.DYSPNEA)
+        from $symptoms,
+        sum($w)
+    )
+then
+    System.out.println("Possible Bronchiolitis detected");
+end
+
+rule "Possible Pneumonia Detection"
+when
+    $e: Examination($symptoms : symptoms)
+    $totalWeight : Number(intValue > 7) from accumulate(
+        Symptom($w : weight,
+                name == SymptomName.HIGH_FEVER ||
+                name == SymptomName.TACHYCARDIA ||
+                name == SymptomName.COUGH ||
+                name == SymptomName.CHEST_PAIN ||
+                name == SymptomName.FATIGUE ||
+                name == SymptomName.DYSPNEA ||
+                name == SymptomName.PALE_SKIN ||
+                name == SymptomName.APPETITE_LOSS ||
+                name == SymptomName.VOMITING)
+        from $symptoms,
+        sum($w)
+    )
+then
+    System.out.println("Possible Pneumonia detected");
+end
+
+rule "Possible Astma Detection"
+when
+    $e: Examination($symptoms : symptoms)
+    $totalWeight : Number(intValue > 7) from accumulate(
+        Symptom($w : weight,
+                name == SymptomName.COUGH ||
+                name == SymptomName.DYSPNEA ||
+                name == SymptomName.WHEEZING ||
+                name == SymptomName.PROLONGED_EXPIRATION)
+        from $symptoms,
+        sum($w)
+    )
+then
+    System.out.println("Possible Astma detected");
+end
+
+rule "Possible Anemia Detection"
+when
+    $e: Examination($symptoms : symptoms)
+    $totalWeight : Number(intValue > 7) from accumulate(
+        Symptom($w : weight,
+                name == SymptomName.APPETITE_LOSS ||
+                name == SymptomName.FATIGUE ||
+                name == SymptomName.PALE_SKIN ||
+                name == SymptomName.TACHYCARDIA)
+        from $symptoms,
+        sum($w)
+    )
+then
+    System.out.println("Possible Anemia detected");
+end
+

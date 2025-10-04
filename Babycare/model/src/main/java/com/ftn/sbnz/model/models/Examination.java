@@ -5,6 +5,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -35,4 +36,11 @@ public class Examination {
     public Double getHeightDifference(){
         return height - baby.getHeight();
     }
+    public Long getAgeAtExamDays() {
+        if (baby == null || baby.getBirthDate() == null || examDate == null) {
+            return null;
+        }
+        return ChronoUnit.DAYS.between(baby.getBirthDate(), examDate);
+    }
+
 }

@@ -8,6 +8,7 @@ import com.ftn.sbnz.service.ExaminationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @RestController
@@ -19,10 +20,15 @@ public class ExaminationController {
     @Autowired
     private BabyService babyService;
 
-    @PostMapping("/create/{babyId}")
+    @PostMapping(value = "/create/{babyId}", consumes = "application/json", produces = "application/json")
     public void addExamination(@PathVariable Long babyId, @RequestBody ExaminationDTO examinationDTO) {
         Baby baby = babyService.findById(babyId);
-        Examination examination = examinationService.addExamination(baby, examinationDTO);
-        examinationService.addVaccination(baby, examination);
+        Examination examination = null;
+        try {
+            examination = examinationService.addExamination(baby, examinationDTO);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+//        examinationService.addVaccination(baby, examination);
     }
 }

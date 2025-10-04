@@ -1,0 +1,38 @@
+:host ::ng-deep label{
+    max-width: 100px !important;
+    min-width: 100px !important;
+}
+:host ::ng-deep input.my-fixed{
+    max-width: 250px !important;
+    min-width: 250px !important;
+}
+:host ::ng-deep p-cascadeselect{
+    max-width: 250px !important;
+    min-width: 250px !important;
+}
+:host ::ng-deep p-inputnumber input{
+    max-width: 100px !important;
+    min-width: 100px !important;
+}
+:host ::ng-deep .flex-space-between{
+    display: flex !important;
+    justify-content: space-evenly !important;
+}
+.mb{
+    margin-bottom: 60px!important;
+}
+.js-end{
+    justify-content: end !important;
+}
+:host ::ng-deep p-datepicker{
+    min-width: 250px !important;
+}
+:host ::ng-deep p-datepicker input{
+    max-width: 250px !important;
+    min-width: 250px !important;
+}
+.baby-container{
+    display: flex;
+    margin-bottom: 50px;
+    gap:25px;
+}

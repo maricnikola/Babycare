@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class BabyService {
@@ -33,5 +35,11 @@ public class BabyService {
         baby.setVaccinations(new ArrayList<>());
 
         return babyRepository.save(baby);
+    }
+    public List<BabyDTO> getAllBabies() {
+        return babyRepository.findAll()
+                .stream()
+                .map(BabyDTO::new)
+                .collect(Collectors.toList());
     }
 }
