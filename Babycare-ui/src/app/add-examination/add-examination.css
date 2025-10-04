@@ -1,0 +1,26 @@
+:host ::ng-deep p-listbox{
+    max-width: 200px;
+}
+
+.form-container{
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.btn-container{
+    display: flex;
+    justify-content: space-between;
+    width: 40%;
+}
+:host ::ng-deep p-inputnumber input{
+    max-width: 100px !important;
+    min-width: 100px !important;
+}
+:host ::ng-deep .flex-space-between{
+    display: flex !important;
+    justify-content: space-evenly !important;
+}
+.mb{
+    margin-bottom: 50px;
+}

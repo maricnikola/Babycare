@@ -1,0 +1,53 @@
+<div class="main-container">
+    <h1> BabyCare </h1>
+    <div class="baby-container">
+        <p-select
+        [(ngModel)]="selectedBabyId"
+        [options]="babies"
+        optionGroupLabel="name"
+        optionGroupChildren="items"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Select a baby"
+        (onChange)="onBabyChange($event)"
+        [filter] = "true"
+        [style]="{ minWidth: '14rem' }"
+        />
+        <p-button (click)="showDialog()" label="Add Baby" />
+    </div>
+
+    <p-button [disabled]="!selectedBabyId" (onClick)="goToAddExamination()" label="Create Examination" />
+
+    <p-dialog header="Add new baby" [modal]="true" [(visible)]="visible" [style]="{ width: '35rem' }">
+
+        <span class="p-text-secondary block mb">Add information about baby:</span>
+        <div class="flex-space-between items-center gap-4 mb-4">
+            <label class="font-semibold w-24">Birth date</label>
+            <p-datepicker [(ngModel)]="birthDate" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
+        </div>
+        <div class="flex-space-between items-center gap-4 mb-4">
+            <label class="font-semibold w-24">First name</label>
+            <input [(ngModel)]="firstName" pInputText id="firstName" class="my-fixed flex-auto" autocomplete="off" />
+        </div>
+        <div class="flex-space-between items-center gap-4 mb-4">
+            <label class="font-semibold w-24">Last name</label>
+            <input [(ngModel)]="lastName"  pInputText id="lastName" class="my-fixed flex-auto" autocomplete="off" />
+        </div>
+        <div class="flex-space-between items-center gap-4 mb-4">
+            <label class="font-semibold w-24">Gender</label>
+            <p-cascadeselect required [(ngModel)]="selectedGender" [options]="genders" optionGroupLabel="name" [style]="{ minWidth: '14rem' }" placeholder="Select a gender" />
+        </div>
+        <div class="flex-space-between items-center gap-4 mb-8">
+            <label class="font-semibold w-24">Height</label>
+            <p-inputnumber inputId="integeronly" [(ngModel)]="height" />
+            <label class="font-semibold w-24">Weight</label>
+            <p-inputnumber inputId="integeronly" [(ngModel)]="weight" />
+        </div>
+        
+        <div class="flex js-end gap-2">
+            <p-button label="Cancel" severity="secondary" (click)="visible = false" />
+            <p-button label="Save" (click)="saveBaby()"/>
+        </div>
+
+    </p-dialog>
+</div>

@@ -15,5 +15,6 @@ public enum SymptomName {
     FATIGUE,
     WHEEZING,
     CHEST_PAIN,
-    PROLONGED_EXPIRATION
+    PROLONGED_EXPIRATION,
+    APPETITE_LOSS
 }
