@@ -1,0 +1,29 @@
+<div class="main-container">
+    <div class="form-container">
+        <h1> Create Examination </h1>
+        <h4> Enter the information from the examination: </h4>
+        <div class="flex-space-between items-center gap-4 mb">
+            <label class="font-semibold w-24">Select symptoms</label>
+            <p-listbox  [filter]="true" [multiple]="true"  [options]="symptoms" [(ngModel)]="selectedSymptoms" optionLabel="name" [dragdrop]="true" class="mb w-full md:w-56" />
+        </div>
+        
+        <div class="flex-space-between items-center gap-4 mb">
+            <label class="font-semibold w-24">Temperature</label>
+            <p-inputnumber  [minFractionDigits]="2" [maxFractionDigits]="5" mode="decimal" inputId="integeronly" [(ngModel)]="temperature" />
+            <label class="font-semibold w-24">Height</label>
+            <p-inputnumber  [minFractionDigits]="2" [maxFractionDigits]="5" mode="decimal" inputId="integeronly" [(ngModel)]="height" />
+            <label class="font-semibold w-24">Weight</label>
+            <p-inputnumber  [minFractionDigits]="2" [maxFractionDigits]="5"  mode="decimal" inputId="integeronly" [(ngModel)]="weight" />
+        </div>
+        <div class="flex-space-between items-center gap-4 mb">
+            <label class="font-semibold w-24">Heart rate</label>
+            <p-inputnumber  inputId="integeronly" [(ngModel)]="heartRate" />
+            <label class="font-semibold w-24">Respiration rate  </label>
+            <p-inputnumber  inputId="integeronly" [(ngModel)]="respirationRate" />
+        </div>
+        <div class="btn-container gap-2">
+                <p-button size="large" label="Back" severity="secondary" (onClick)="goBack()" />
+                <p-button size="large" label="Save" (click)="addExamination()"/>
+        </div>
+    </div>
+</div>
