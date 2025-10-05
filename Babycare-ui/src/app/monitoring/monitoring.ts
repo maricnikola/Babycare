@@ -8,11 +8,10 @@ import { ButtonModule } from 'primeng/button';
 import { InputNumber } from 'primeng/inputnumber';
 import { FloatLabel } from 'primeng/floatlabel';
 import { ToggleButtonModule } from 'primeng/togglebutton';
-
+import { WebSocketService } from '../service/websocket.service'
 @Component({
   selector: 'app-monitoring',
-  imports: [FormsModule, CommonModule, ButtonModule,
-     InputNumber, FloatLabel,ToggleButtonModule],
+  imports: [FormsModule, CommonModule, ButtonModule,ToggleButtonModule],
   templateUrl: './monitoring.html',
   styleUrl: './monitoring.css'
 })
@@ -45,9 +44,12 @@ export class Monitoring {
         });
         
     }
-  constructor(private router: Router, private route: ActivatedRoute) {}
+  constructor(private router: Router, private route: ActivatedRoute, private socket: WebSocketService) {}
   ngOnInit() {
     this.babyId = Number(this.route.snapshot.paramMap.get('babyId'));
+    this.socket.subscribeToTopic('/topic/greetings').subscribe((msg) => {
+                console.log('Received: ', msg);
+    });
   }
   goBack() {
     this.router.navigate(['/']);

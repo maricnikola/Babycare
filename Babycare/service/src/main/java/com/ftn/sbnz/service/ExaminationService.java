@@ -3,11 +3,14 @@ package com.ftn.sbnz.service;
 import com.ftn.sbnz.model.dtos.ExaminationDTO;
 import com.ftn.sbnz.model.models.Baby;
 import com.ftn.sbnz.model.models.Examination;
+import com.ftn.sbnz.model.models.Factual;
 import com.ftn.sbnz.model.models.Symptom;
 import com.ftn.sbnz.model.models.enums.SymptomName;
 import com.ftn.sbnz.model.util.KnowledgeSessionHelper;
 import com.ftn.sbnz.repository.IExaminationRepository;
+import org.drools.core.event.DefaultAgendaEventListener;
 import org.drools.decisiontable.ExternalSpreadsheetCompiler;
+import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
@@ -30,6 +33,8 @@ public class ExaminationService {
     private KieContainer kieContainer;
     @Inject
     private IExaminationRepository repository;
+    @Autowired
+    private WebSocketService webSocketService;
 
     public Examination addExamination(Baby baby, ExaminationDTO examinationDTO) throws IOException {
         Examination examination = new Examination();
@@ -62,13 +67,16 @@ public class ExaminationService {
 
         KieSession kieSession = kieHelper.build().newKieSession();
 
+        attachWebSocket(kieSession);
         kieSession.insert(baby);
         kieSession.insert(examination);
         kieSession.fireAllRules();
         kieSession.dispose();
         repository.save(examination);
+        webSocketService.sendToTopic("/topic/rules", "RADIII");
         return examination;
     }
+
     public void addVaccination(Baby baby, Examination examination){
         KieSession kieSession = KnowledgeSessionHelper.getStatefulKnowledgeSession(kieContainer, "test-session");
         kieSession.insert(baby);
@@ -91,5 +99,17 @@ public class ExaminationService {
 
     public Examination findLastExaminationForBaby(Long babyId) {
         return repository.findTopByBabyIdOrderByExamDateDesc(babyId);
+    }
+
+    private void attachWebSocket(KieSession kieSession) {
+        kieSession.addEventListener(new DefaultAgendaEventListener() {
+            @Override
+            public void afterMatchFired(AfterMatchFiredEvent event) {
+                String rule = event.getMatch().getRule().getName();
+                List<Object> facts = event.getMatch().getObjects().stream()
+                        .filter(f -> f instanceof Factual)
+                        .collect(Collectors.toList());
+            }
+        });
     }
 }

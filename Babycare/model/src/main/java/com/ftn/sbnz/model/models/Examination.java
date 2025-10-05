@@ -12,7 +12,7 @@ import java.util.List;
 
 @Data
 @Entity
-public class Examination {
+public class Examination implements Factual{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
