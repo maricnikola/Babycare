@@ -22,30 +22,8 @@ export class Monitoring {
   heartRate: any;
   respirationRate: any;
   checked: boolean = false;
-     facts: Array<{message: string, type: string}> = [];
+  facts: Array<{message: string, type: string}> = [];
 
-    sendData() {
-        this.facts.push({
-            message: `Heart Rate: ${this.heartRate} bpm`,
-            type: 'info'
-        });
-        
-        this.facts.push({
-            message: `Respiration Rate: ${this.respirationRate} breaths/min`,
-            type: 'warning'
-        });
-        
-        this.facts.push({
-            message: `Oxygen Therapy: ${this.checked ? 'ON' : 'OFF'}`,
-            type: this.checked ? 'success' : 'error'  // Zeleno ako ON, crveno ako OFF
-        });
-        
-        this.facts.push({
-            message: '---',
-            type: 'separator'
-        });
-        
-    }
   constructor(private router: Router,
     private route: ActivatedRoute,
     private socket: WebSocketService,
@@ -56,8 +34,19 @@ export class Monitoring {
     this.monitoringService.loadData().subscribe((response) => {
       console.log('Data loaded: ', response);
     });
-    this.socket.subscribeToTopic('/topic/rules').subscribe((msg) => {
+    this.socket.subscribeToTopic('/topic/alarm').subscribe((msg) => {
+      console.log('Received: ', msg);  
+      this.facts.push({
+          message: `ALARM: ${msg}`,
+          type: 'error'
+      });
+    });
+    this.socket.subscribeToTopic('/topic/warning').subscribe((msg) => {
       console.log('Received: ', msg);
+      this.facts.push({
+          message: `WARNING: ${msg}`,
+          type: 'warning'
+      }); 
     });
   }
   goBack() {

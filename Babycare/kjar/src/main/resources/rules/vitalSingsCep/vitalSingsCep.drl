@@ -18,8 +18,7 @@ then
         "Bradikardija - hitna evaluacija kardiologa + EKG monitoring.",
         "CRITICAL",
         "HR",
-        clock.getCurrentTime()
-
+        System.currentTimeMillis()
     );
     insert(alarm);
 //    System.out.println(alarm);
@@ -36,7 +35,7 @@ then
     WarningEvent warning = new WarningEvent(
         "Potreban pojačani nadzor.",
         "HR",
-        clock.getCurrentTime()
+        System.currentTimeMillis()
 
     );
     insert(warning);
@@ -64,7 +63,7 @@ then
     WarningEvent warning = new WarningEvent(
         "Blaga tahikardija - proveriti temperaturu i hidriranost.",
         "HR",
-        clock.getCurrentTime()
+        System.currentTimeMillis()
 
     );
     insert(warning);
@@ -83,8 +82,7 @@ then
         "Teška tahikardija - urgentna kardiološka evaluacija!",
         "URGENT",
         "HR",
-        clock.getCurrentTime()
-
+        System.currentTimeMillis()
     );
     insert(alarm);
 //    System.out.println(alarm);
@@ -112,8 +110,7 @@ then
     WarningEvent warning = new WarningEvent(
         "Blaga hipoksemija - optimizacija položaja deteta.",
         "SPO2",
-        clock.getCurrentTime()
-
+        System.currentTimeMillis()
     );
     insert(warning);
 //    System.out.println(warning);
@@ -130,8 +127,7 @@ then
     WarningEvent warning = new WarningEvent(
         "Umerena hipoksemija - uvođenje terapije kiseonikom.",
         "SPO2",
-        clock.getCurrentTime()
-
+        System.currentTimeMillis()
     );
     insert(warning);
 //    System.out.println(warning);
@@ -149,7 +145,7 @@ then
         "Teška hipoksemija - URGENTNA medicinska intervencija!",
         "EMERGENCY",
         "SPO2",
-        clock.getCurrentTime()
+        System.currentTimeMillis()
 
     );
     insert(alarm);
@@ -169,8 +165,7 @@ then
         "Sumnja na srčanu manu, uputiti na ehokardiografiju.",
         "CRITICAL",
         "CARDIAC",
-        clock.getCurrentTime()
-
+        System.currentTimeMillis()
     );
     insert(alarm);
 //    System.out.println(alarm);
