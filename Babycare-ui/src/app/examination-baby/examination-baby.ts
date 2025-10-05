@@ -20,8 +20,7 @@ import { DiseaseCheck } from "../disease-check/disease-check";
   templateUrl: './examination-baby.html',
   styleUrl: './examination-baby.css'
 })
-export class ExaminationBaby {
-    
+export class ExaminationBaby {    
   constructor(private babyService: BabyService, private router: Router) {}
     firstName!: string;
     lastName!: string;
@@ -96,6 +95,12 @@ export class ExaminationBaby {
   goToMonitoring() {
     if (this.selectedBabyId) {
       this.router.navigate(['/monitoring', this.selectedBabyId]);
+    }
+  }
+
+  goToPostVaccination() {
+    if (this.selectedBabyId) {
+      this.router.navigate(['/postVaccination', this.selectedBabyId]);
     }
   }
 }

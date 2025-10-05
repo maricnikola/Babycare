@@ -6,7 +6,7 @@
         <ksession name="vitalSingsCepKsession" clockType="realtime"/>
     </kbase>
     <kbase name="postVaccinationCepKbase" eventProcessingMode="stream" packages="postVaccinationCep">
-        <ksession name="postVaccinationCepKsession" clockType="pseudo"/>
+        <ksession name="postVaccinationCepKsession" clockType="realtime"/>
     </kbase>
     <kbase name="rules" packages="test">
         <ksession name="test-session"/>
