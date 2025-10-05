@@ -1,10 +1,14 @@
 package com.ftn.sbnz.repository;
 
 import com.ftn.sbnz.model.dtos.MonitoringData;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +19,9 @@ public class MonitoringDataLoader {
         String line;
         String csvSplitBy = ",";
 
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(new ClassPathResource(filePath).getInputStream(), StandardCharsets.UTF_8))) {
+
             String header = br.readLine();
             while ((line = br.readLine()) != null) {
                 try {
