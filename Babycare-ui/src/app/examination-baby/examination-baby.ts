@@ -10,10 +10,11 @@ import { Baby, Gender } from '../model/baby';
 import { BabyService } from '../service/baby.service';
 import { Router } from '@angular/router';
 import { SelectModule } from 'primeng/select';
+import { DiseaseCheck } from "../disease-check/disease-check";
 
 @Component({
   selector: 'app-examination-baby',
-  imports: [SelectModule, CascadeSelectModule, Dialog, ButtonModule, InputTextModule, DatePickerModule, FormsModule, InputNumber],
+  imports: [SelectModule, CascadeSelectModule, Dialog, ButtonModule, InputTextModule, DatePickerModule, FormsModule, InputNumber, DiseaseCheck],
   providers: [BabyService],
   templateUrl: './examination-baby.html',
   styleUrl: './examination-baby.css'

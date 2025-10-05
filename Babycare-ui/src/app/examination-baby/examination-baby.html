@@ -17,6 +17,7 @@
     </div>
 
     <p-button [disabled]="!selectedBabyId" (onClick)="goToAddExamination()" label="Create Examination" />
+    <app-disease-check [selectedBabyId]="selectedBabyId"/>
 
     <p-dialog header="Add new baby" [modal]="true" [(visible)]="visible" [style]="{ width: '35rem' }">
 

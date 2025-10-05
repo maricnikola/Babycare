@@ -1,0 +1,20 @@
+<div style="display: flex; align-items: center; gap: 1rem; margin-top: 2rem;">
+
+    <p-select
+    id="disease"
+    [(ngModel)]="selectedDisease"
+    [options]="diseaseOptions"
+    optionLabel="label"
+    optionValue="value"
+    placeholder="Choose a disease"
+    [style]="{ width: '100%' }"
+    />
+    <p-button
+    label="Check"
+    (onClick)="checkDisease()"
+    [disabled]="!selectedDisease || !selectedBabyId || loading"
+    [loading]="loading"
+    />
+    
+    <p-toast/>
+</div>
