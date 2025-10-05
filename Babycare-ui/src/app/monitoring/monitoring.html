@@ -1,0 +1,24 @@
+<div class="main-container">
+    <div class="form-container">
+        <h1> Monitoring </h1>
+        <h4>Provide heart rate, respiration rate and oxygen therapy status to evaluate baby's condition:</h4>
+        <div class="flex-space-between items-center gap-4 mb">
+            <p-floatlabel>
+                <p-inputnumber pInputText id="heartRate" [(ngModel)]="heartRate" [min]="100" [max]="240"/>
+                <label for="heartRate">Heart rate</label>
+            </p-floatlabel>
+            <p-floatlabel>
+                <p-inputnumber  inputId="respirationRate" [(ngModel)]="respirationRate" [min]="60" [max]="100"/>
+                <label for="respirationRate">Respiration rate</label>
+            </p-floatlabel>
+
+            <p-togglebutton [(ngModel)]="checked" onLabel="Oxygen Therapy ON" offLabel="Oxygen Therapy OFF" styleClass="w-24" />
+
+            
+            <p-button size="large" label="Send"  (onClick)="goBack()" />
+        </div>
+        <div class="btn-container gap-2">
+                <p-button size="large" label="Back" severity="secondary" (onClick)="goBack()" />
+        </div>
+    </div>
+</div>

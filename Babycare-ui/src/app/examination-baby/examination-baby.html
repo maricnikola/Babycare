@@ -16,9 +16,11 @@
         <p-button (click)="showDialog()" label="Add Baby" />
     </div>
 
-    <p-button [disabled]="!selectedBabyId" (onClick)="goToAddExamination()" label="Create Examination" />
+    <div style="display: flex; gap: 1rem; flex-direction: row;">
+        <p-button [disabled]="!selectedBabyId" (onClick)="goToAddExamination()" label="Create Examination" />
+        <p-button [disabled]="!selectedBabyId" (onClick)="goToMonitoring()" label="Monitoring" />
+    </div>
     <app-disease-check [selectedBabyId]="selectedBabyId"/>
-
     <p-dialog header="Add new baby" [modal]="true" [(visible)]="visible" [style]="{ width: '35rem' }">
 
         <span class="p-text-secondary block mb">Add information about baby:</span>

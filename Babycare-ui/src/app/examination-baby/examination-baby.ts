@@ -14,7 +14,8 @@ import { DiseaseCheck } from "../disease-check/disease-check";
 
 @Component({
   selector: 'app-examination-baby',
-  imports: [SelectModule, CascadeSelectModule, Dialog, ButtonModule, InputTextModule, DatePickerModule, FormsModule, InputNumber, DiseaseCheck],
+  imports: [SelectModule, CascadeSelectModule, Dialog, ButtonModule, 
+    InputTextModule, DatePickerModule, FormsModule, InputNumber, DiseaseCheck],
   providers: [BabyService],
   templateUrl: './examination-baby.html',
   styleUrl: './examination-baby.css'
@@ -86,10 +87,15 @@ export class ExaminationBaby {
    this.visible = false;
   }
 
-    goToAddExamination() {
-      if (this.selectedBabyId) {
-        this.router.navigate(['/addExamination', this.selectedBabyId]);
-      }
-      console.log(this.selectedBabyId);
+  goToAddExamination() {
+    if (this.selectedBabyId) {
+      this.router.navigate(['/addExamination', this.selectedBabyId]);
     }
+    console.log(this.selectedBabyId);
+  }
+  goToMonitoring() {
+    if (this.selectedBabyId) {
+      this.router.navigate(['/monitoring', this.selectedBabyId]);
+    }
+  }
 }
