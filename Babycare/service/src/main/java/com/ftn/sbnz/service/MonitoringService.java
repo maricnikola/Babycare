@@ -64,7 +64,8 @@ public class MonitoringService {
         kieSession.addEventListener(new DefaultRuleRuntimeEventListener() {
             @Override
             public void objectInserted(ObjectInsertedEvent event) {
-                Object fact = event.getObject();    if (fact instanceof AlarmEvent) {
+                Object fact = event.getObject();   
+                if (fact instanceof AlarmEvent) {
                     String msg = ((AlarmEvent) fact).getMessage();
                     webSocketService.sendToTopic("/topic/alarm", msg);
                 } else if (fact instanceof WarningEvent) {
