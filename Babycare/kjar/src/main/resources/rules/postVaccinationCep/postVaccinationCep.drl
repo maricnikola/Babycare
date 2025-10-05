@@ -28,7 +28,7 @@ end
 rule "Mild reaction"
 when
     $vac: VaccinationEvent()
-    $temp: TemperatureEvent( level == TemperatureLevel.LOW,
+    $sym: SymptomEvent( type in (SymptomType.LOW_FEVER),
            this after[0h,24h] $vac
      )
 then
@@ -39,7 +39,7 @@ end
 rule "Mild prolonged reaction"
 when
     $vac: VaccinationEvent()
-    $temp: TemperatureEvent( level == TemperatureLevel.LOW,
+    $sym: SymptomEvent( type in (SymptomType.LOW_FEVER),
            this after[24h,48h] $vac
      )
 then
@@ -50,7 +50,7 @@ end
 rule "Moderate reaction"
 when
     $vac: VaccinationEvent()
-    $temp: TemperatureEvent( level == TemperatureLevel.MODERATE,
+    $sym: SymptomEvent( type in (SymptomType.MODERATE_FEVER),
            this after[0h,12h] $vac
      )
 then
@@ -61,7 +61,7 @@ end
 rule "Unusual reaction"
 when
     $vac: VaccinationEvent()
-    $temp: TemperatureEvent( level == TemperatureLevel.HIGH,
+    $sym: SymptomEvent( type in (SymptomType.HIGH_FEVER),
            this after[0h,24h] $vac
      )
 then
@@ -72,7 +72,7 @@ end
 rule "Serious reaction"
 when
     $vac: VaccinationEvent()
-    $temp: TemperatureEvent( level == TemperatureLevel.HIGH || level == TemperatureLevel.CRITICAL,
+    $sym: SymptomEvent( type in (SymptomType.HIGH_FEVER,SymptomType.CRITICAL_FEVER),
            this after[24h,48h] $vac
      )
 then
@@ -84,8 +84,7 @@ rule "Alarming reaction"
 when
     $vac: VaccinationEvent()
     $sym: SymptomEvent( type in (SymptomType.CONSCIOUSNESS_CRISIS,SymptomType.COUGH) )
-    $temp: TemperatureEvent(
-        level == TemperatureLevel.HIGH || level == TemperatureLevel.CRITICAL,
+    $sym1: SymptomEvent( type in (SymptomType.HIGH_FEVER,SymptomType.CRITICAL_FEVER),
         this after[0h,48h] $vac
     )
 then

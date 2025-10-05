@@ -5,5 +5,9 @@ public enum SymptomType {
     SWELLING,
     PAIN,
     CONSCIOUSNESS_CRISIS,
-    COUGH
+    COUGH,
+    LOW_FEVER,
+    MODERATE_FEVER,
+    HIGH_FEVER,
+    CRITICAL_FEVER
 }
