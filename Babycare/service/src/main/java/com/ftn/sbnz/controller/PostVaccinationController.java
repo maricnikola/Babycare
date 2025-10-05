@@ -27,17 +27,24 @@ public class PostVaccinationController {
     public void addSymptom(@RequestBody SymptomType symptomType,
                            @PathVariable Long babyId) {
         KieSession session = sessionService.getSession(babyId);
-        if (session != null) {
+        if (session == null) {
+            session = sessionService.createSession(babyId, "postVaccinationCepKsession");
             attachWebSocket(session);
-            session.insert(new SymptomEvent(symptomType,System.currentTimeMillis()));
-            session.fireAllRules();
-        }else{
-            session = sessionService.createSession(babyId,"postVaccinationCepKsession");
-            attachWebSocket(session);
+
+            KieSession finalSession = session;
+            new Thread(() -> {
+                try {
+                    finalSession.fireUntilHalt();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }, "DroolsSession-" + babyId).start();
+
             session.insert(new VaccinationEvent(System.currentTimeMillis()));
-            session.insert(new SymptomEvent(symptomType,System.currentTimeMillis()));
-            session.fireAllRules();
         }
+
+        session.insert(new SymptomEvent(symptomType, System.currentTimeMillis()));
+
         System.out.println("Symptom for baby " + babyId + ": " + symptomType);
     }
 
@@ -48,13 +55,11 @@ public class PostVaccinationController {
             public void objectInserted(ObjectInsertedEvent event) {
                 Object fact = event.getObject();
                 if (fact instanceof HospitalizationEvent) {
-                    String msg = ((HospitalizationEvent) fact).getReason().name();
-                    webSocketService.sendToTopic("/topic/alarm", msg);
+                    webSocketService.sendToTopic("/topic/alarm",  ((HospitalizationEvent) fact).getReason());
                 } else if (fact instanceof TherapyEvent) {
-                    String msg = ((TherapyEvent) fact).getTherapy().name();
-                    webSocketService.sendToTopic("/topic/therapy", msg);
+                    webSocketService.sendToTopic("/topic/therapy", ((TherapyEvent) fact).getTherapy());
                 }
-                System.out.println(fact.toString());
+
             }
         });
     }

@@ -15,7 +15,7 @@ import org.kie.api.definition.type.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 public class HospitalizationEvent {
-    private HospitalizationReason reason;
+    private String reason;
     private long timestamp;
 
 }

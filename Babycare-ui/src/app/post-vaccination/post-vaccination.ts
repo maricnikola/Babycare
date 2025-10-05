@@ -50,7 +50,7 @@ export class PostVaccination {
     this.socket.subscribeToTopic('/topic/alarm').subscribe((msg) => {
       console.log('Received: ', msg);  
       this.facts.push({
-          message: `ALARM: ${msg}`,
+          message: `ALERT: ${msg}`,
           type: 'error'
       });
     });

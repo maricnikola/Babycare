@@ -30,19 +30,24 @@ export class WebSocketService {
     this.client.activate();
   }
 
-  subscribeToTopic(topic: string): Observable<string> {
-    const subject = new Subject<string>();
-
-    if (!this.connected) {
-      this.client.onConnect = () => {
-        this.connected = true;
-        this.doSubscribe(topic, subject);
+subscribeToTopic(topic: string): Observable<string> {
+    return new Observable<string>((observer) => {
+      const doSub = () => {
+        this.client.subscribe(topic, (message) => {
+          observer.next(message.body);
+        });
       };
-    } else {
-      this.doSubscribe(topic, subject);
-    }
-
-    return subject.asObservable();
+      if (this.connected) {
+        doSub();
+      } else {
+        const checkConnection = setInterval(() => {
+          if (this.connected) {
+            clearInterval(checkConnection);
+            doSub();
+          }
+        }, 100);
+      }
+    });
   }
 
   private doSubscribe(topic: string, subject: Subject<string>) {

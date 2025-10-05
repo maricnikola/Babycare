@@ -15,6 +15,6 @@ import org.kie.api.definition.type.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TherapyEvent {
-    private TherapyType therapy;
+    private String therapy;
     private long timestamp;
 }
