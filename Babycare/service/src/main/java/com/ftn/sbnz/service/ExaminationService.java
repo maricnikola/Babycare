@@ -18,6 +18,7 @@ import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,7 +42,7 @@ public class ExaminationService {
         List<Symptom> symptoms = mapToSymptoms(examinationDTO.getSymptoms());
         examination.setSymptoms(symptoms);
         examination.setReports(new ArrayList<>());
-
+        examination.setExamDate(LocalDate.now());
         examination.setBaby(baby);
 
         baby.getExaminations().add(examination);
@@ -65,6 +66,7 @@ public class ExaminationService {
         kieSession.insert(examination);
         kieSession.fireAllRules();
         kieSession.dispose();
+        repository.save(examination);
         return examination;
     }
     public void addVaccination(Baby baby, Examination examination){
@@ -74,7 +76,6 @@ public class ExaminationService {
         kieSession.fireAllRules();
         kieSession.dispose();
 
-        repository.save(examination);
     }
 
     public static List<Symptom> mapToSymptoms(List<SymptomName> symptomNames) {
@@ -86,5 +87,9 @@ public class ExaminationService {
                     return symptom;
                 })
                 .collect(Collectors.toList());
+    }
+
+    public Examination findLastExaminationForBaby(Long babyId) {
+        return repository.findTopByBabyIdOrderByExamDateDesc(babyId);
     }
 }

@@ -1,9 +1,11 @@
 package com.ftn.sbnz.controller;
 
 import com.ftn.sbnz.model.models.Baby;
+import com.ftn.sbnz.model.models.Examination;
 import com.ftn.sbnz.model.models.enums.Disease;
 import com.ftn.sbnz.service.BabyService;
 import com.ftn.sbnz.service.DiagnosisService;
+import com.ftn.sbnz.service.ExaminationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +21,9 @@ public class DiagnosisController {
     private DiagnosisService diagnosisService;
 
     @Autowired
+    private ExaminationService examinationService;
+
+    @Autowired
     private BabyService babyService;
 
     @GetMapping
@@ -32,17 +37,17 @@ public class DiagnosisController {
         if (baby == null) {
             return ResponseEntity.notFound().build();
         }
-
-        if (baby.getLastExamination() == null) {
+        Examination examination = examinationService.findLastExaminationForBaby(babyId);
+        if (examination == null) {
             return ResponseEntity.badRequest()
                     .body(Map.of("error", "No examination found for this baby"));
         }
         LocalDate twoDaysAgo = LocalDate.now().minusDays(2);
-        if (baby.getLastExamination().getExamDate().isBefore(twoDaysAgo)) {
+        if (examination.getExamDate().isBefore(twoDaysAgo)) {
             return ResponseEntity.badRequest()
                     .body(Map.of("error", "Last examination must not be older than 2 days"));
         }
-        boolean hasDisease = diagnosisService.checkDisease(disease, baby.getLastExamination());
+        boolean hasDisease = diagnosisService.checkDisease(disease, examination);
         return ResponseEntity.ok()
                 .body(Map.of("hasDisease", hasDisease, "disease", disease.name()));
     }

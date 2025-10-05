@@ -28,8 +28,6 @@ export class DiseaseCheck {
     { label: 'Anemia', value: Disease.ANEMIA }
   ];
   
-  result: boolean | null = null;
-  errorMessage: string | null = null;
   loading = false;
   
   constructor(private diagnosisService: DiagnosisService,
@@ -47,9 +45,12 @@ export class DiseaseCheck {
     this.diagnosisService.checkDisease(this.selectedDisease, this.selectedBabyId)
     .subscribe({
       next: (result) => {
-        this.result = result;
         this.loading = false;
-        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Message Content' });
+        if(result.hasDisease){
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: `Baby has disease: ${result.disease}` });
+        }else{
+          this.messageService.add({ severity: 'warn', summary: 'Warn', detail: `Baby does not have ${result.disease}`});
+        }
       },
       error: (err) => {
         this.loading = false;
