@@ -20,7 +20,31 @@ export class Monitoring {
   babyId!: number;
   heartRate: any;
   respirationRate: any;
-  checked: any;
+  checked: boolean = false;
+     facts: Array<{message: string, type: string}> = [];
+
+    sendData() {
+        this.facts.push({
+            message: `Heart Rate: ${this.heartRate} bpm`,
+            type: 'info'
+        });
+        
+        this.facts.push({
+            message: `Respiration Rate: ${this.respirationRate} breaths/min`,
+            type: 'warning'
+        });
+        
+        this.facts.push({
+            message: `Oxygen Therapy: ${this.checked ? 'ON' : 'OFF'}`,
+            type: this.checked ? 'success' : 'error'  // Zeleno ako ON, crveno ako OFF
+        });
+        
+        this.facts.push({
+            message: '---',
+            type: 'separator'
+        });
+        
+    }
   constructor(private router: Router, private route: ActivatedRoute) {}
   ngOnInit() {
     this.babyId = Number(this.route.snapshot.paramMap.get('babyId'));

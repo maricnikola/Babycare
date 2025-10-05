@@ -15,10 +15,26 @@
             <p-togglebutton [(ngModel)]="checked" onLabel="Oxygen Therapy ON" offLabel="Oxygen Therapy OFF" styleClass="w-24" />
 
             
-            <p-button size="large" label="Send"  (onClick)="goBack()" />
+            <p-button size="large" label="Send"  (onClick)="sendData()" />
         </div>
+
+        <div class="terminal-container">
+            <div class="terminal-header">
+                <span>Vital Signs Log</span>
+            </div>
+            <div class="terminal-content">
+                <div *ngFor="let fact of facts" class="terminal-line">
+                    <span class="terminal-prompt">></span>
+                    <span class="terminal-text" [ngClass]="fact.type">{{ fact.message }}</span>
+                </div>
+                <div *ngIf="facts.length === 0" class="terminal-line terminal-empty">
+                    <span class="terminal-text">Waiting for data...</span>
+                </div>
+            </div>
+        </div>
+
         <div class="btn-container gap-2">
-                <p-button size="large" label="Back" severity="secondary" (onClick)="goBack()" />
+            <p-button size="large" label="Back" severity="secondary" (onClick)="goBack()" />
         </div>
     </div>
 </div>
