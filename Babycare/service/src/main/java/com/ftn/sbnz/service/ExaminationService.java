@@ -73,7 +73,6 @@ public class ExaminationService {
         kieSession.fireAllRules();
         kieSession.dispose();
         repository.save(examination);
-        webSocketService.sendToTopic("/topic/rules", "RADIII");
         return examination;
     }
 
@@ -109,6 +108,7 @@ public class ExaminationService {
                 List<Object> facts = event.getMatch().getObjects().stream()
                         .filter(f -> f instanceof Factual)
                         .collect(Collectors.toList());
+                webSocketService.sendToTopic("/topic/rules", "RADIII");
             }
         });
     }

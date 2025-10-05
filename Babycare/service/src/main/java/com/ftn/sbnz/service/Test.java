@@ -92,14 +92,14 @@ public class Test {
 //            }
 //
 //            kSession.fireAllRules();
-            KieSession k1Session = KnowledgeSessionHelper.getStatefulKnowledgeSession(kc,"postVaccinationCepKsession");
-            SessionPseudoClock pseudoClock = k1Session.getSessionClock();
-            System.out.println("Hello world");
-            k1Session.insert(new VaccinationEvent(pseudoClock.getCurrentTime()));
-            pseudoClock.advanceTime(25, TimeUnit.HOURS);
-//            k1Session.insert(new SymptomEvent(SymptomType.PAIN, pseudoClock.getCurrentTime()));
-            k1Session.insert(new TemperatureEvent(TemperatureLevel.LOW,pseudoClock.getCurrentTime()));
-            k1Session.fireAllRules();
+//            KieSession k1Session = KnowledgeSessionHelper.getStatefulKnowledgeSession(kc,"postVaccinationCepKsession");
+//            SessionPseudoClock pseudoClock = k1Session.getSessionClock();
+//            System.out.println("Hello world");
+//            k1Session.insert(new VaccinationEvent(pseudoClock.getCurrentTime()));
+//            pseudoClock.advanceTime(25, TimeUnit.HOURS);
+////            k1Session.insert(new SymptomEvent(SymptomType.PAIN, pseudoClock.getCurrentTime()));
+//            k1Session.insert(new TemperatureEvent(TemperatureLevel.LOW,pseudoClock.getCurrentTime()));
+//            k1Session.fireAllRules();
 
         }catch(Throwable t){
             t.printStackTrace();

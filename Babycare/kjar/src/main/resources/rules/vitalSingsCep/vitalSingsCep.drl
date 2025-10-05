@@ -1,5 +1,10 @@
 package vitalSingsCep;
 import com.ftn.sbnz.model.events.VitalSignsEvent;
+import com.ftn.sbnz.model.events.AlarmEvent;
+import com.ftn.sbnz.model.events.WarningEvent
+import java.time.LocalDateTime;
+
+global org.drools.core.time.SessionPseudoClock clock;
 
 rule "Bradikardija"
 when
@@ -7,8 +12,17 @@ when
         $v: VitalSignsEvent(hr<140) over window: time(15s),
         count($v)
     )
+    not(AlarmEvent(category == "HR", severity == "CRITICAL"))
 then
-    System.out.println("Bradikardija - hitna evaluacija kardiologa + EKG monitoring.");
+   AlarmEvent alarm = new AlarmEvent(
+        "Bradikardija - hitna evaluacija kardiologa + EKG monitoring.",
+        "CRITICAL",
+        "HR",
+        clock.getCurrentTime()
+
+    );
+    insert(alarm);
+//    System.out.println(alarm);
 end
 
 rule "Donja granica normale HR"
@@ -17,8 +31,16 @@ when
         $v: VitalSignsEvent( hr >= 140 && hr < 180 ) over window:time(15s),
         count($v)
     )
+    not(WarningEvent(category == "HR", message == "Potreban pojačani nadzor."))
 then
-    System.out.println("Potreban pojačani nadzor.");
+    WarningEvent warning = new WarningEvent(
+        "Potreban pojačani nadzor.",
+        "HR",
+        clock.getCurrentTime()
+
+    );
+    insert(warning);
+//    System.out.println(warning);
 end
 
 rule "Normalna frekvencija HR"
@@ -28,7 +50,7 @@ when
         count($v)
     )
 then
-    System.out.println("Standardno praćenje.");
+//    System.out.println("Standardno praćenje.");
 end
 
 rule "Blaga tahikardija HR"
@@ -37,8 +59,16 @@ when
         $v: VitalSignsEvent( hr > 200 && hr <= 220 ) over window:time(15s),
         count($v)
     )
+    not(WarningEvent(category == "HR", message == "Blaga tahikardija - proveriti temperaturu i hidriranost."))
 then
-    System.out.println("Blaga tahikardija - proveriti temperaturu i hidriranost.");
+    WarningEvent warning = new WarningEvent(
+        "Blaga tahikardija - proveriti temperaturu i hidriranost.",
+        "HR",
+        clock.getCurrentTime()
+
+    );
+    insert(warning);
+//    System.out.println(warning);
 end
 
 rule "Teška tahikardija HR"
@@ -47,8 +77,17 @@ when
         $v: VitalSignsEvent( hr > 220 ) over window:time(15s),
         count($v)
     )
+    not(AlarmEvent(category == "HR", severity == "URGENT"))
 then
-    System.out.println("Teška tahikardija - urgentna kardiološka evaluacija!");
+    AlarmEvent alarm = new AlarmEvent(
+        "Teška tahikardija - urgentna kardiološka evaluacija!",
+        "URGENT",
+        "HR",
+        clock.getCurrentTime()
+
+    );
+    insert(alarm);
+//    System.out.println(alarm);
 end
 
 
@@ -59,7 +98,7 @@ when
         count($v)
     )
 then
-    System.out.println("Normalna oksigenacija - standardno praćenje.");
+//    System.out.println("Normalna oksigenacija - standardno praćenje.");
 end
 
 rule "Blaga hipoksemija"
@@ -68,8 +107,16 @@ when
         $v: VitalSignsEvent( spo2 > 95 && spo2 < 97 ) over window:time(15s),
         count($v)
     )
+    not(WarningEvent(category == "SPO2", message == "Blaga hipoksemija - optimizacija položaja deteta."))
 then
-    System.out.println("Blaga hipoksemija - optimizacija položaja deteta.");
+    WarningEvent warning = new WarningEvent(
+        "Blaga hipoksemija - optimizacija položaja deteta.",
+        "SPO2",
+        clock.getCurrentTime()
+
+    );
+    insert(warning);
+//    System.out.println(warning);
 end
 
 rule "Umerena hipoksemija"
@@ -78,8 +125,16 @@ when
         $v: VitalSignsEvent( spo2 >= 92 && spo2 < 95 ) over window:time(15s),
         count($v)
     )
+    not(WarningEvent(category == "SPO2", message == "Umerena hipoksemija - uvođenje terapije kiseonikom."))
 then
-    System.out.println("Umerena hipoksemija - uvođenje terapije kiseonikom.");
+    WarningEvent warning = new WarningEvent(
+        "Umerena hipoksemija - uvođenje terapije kiseonikom.",
+        "SPO2",
+        clock.getCurrentTime()
+
+    );
+    insert(warning);
+//    System.out.println(warning);
 end
 
 rule "Teška hipoksemija"
@@ -88,8 +143,17 @@ when
         $v: VitalSignsEvent( spo2 < 92 ) over window:time(15s),
         count($v)
     )
+    not(AlarmEvent(category == "SPO2", severity == "EMERGENCY"))
 then
-    System.out.println("Teška hipoksemija - URGENTNA medicinska intervencija!");
+    AlarmEvent alarm = new AlarmEvent(
+        "Teška hipoksemija - URGENTNA medicinska intervencija!",
+        "EMERGENCY",
+        "SPO2",
+        clock.getCurrentTime()
+
+    );
+    insert(alarm);
+//    System.out.println(alarm);
 end
 
 
@@ -99,6 +163,15 @@ when
         $v: VitalSignsEvent( (hr < 120 || hr > 200), onOxygenTherapy == true ) over window:time(15s),
         count($v)
     )
+    not(AlarmEvent(category == "CARDIAC", severity == "CRITICAL"))
 then
-    System.out.println("Sumnja na srčanu manu, uputiti na ehokardiografiju.");
+    AlarmEvent alarm = new AlarmEvent(
+        "Sumnja na srčanu manu, uputiti na ehokardiografiju.",
+        "CRITICAL",
+        "CARDIAC",
+        clock.getCurrentTime()
+
+    );
+    insert(alarm);
+//    System.out.println(alarm);
 end
