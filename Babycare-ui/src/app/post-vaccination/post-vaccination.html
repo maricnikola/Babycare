@@ -1,0 +1,45 @@
+<div class="main-container">
+    <div class="form-container">
+        <h1>Post-vaccination Tracking</h1>
+        <h4>Enter symptoms if the baby has any, and track system alarms and warnings</h4>
+        <div class="flex-space-between  gap-4 mb">
+            <p-select
+                id="symptom"
+                [(ngModel)]="selectedSymptom"
+                [options]="symptomOptions"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Choose a symptom"
+                [checkmark]="true"
+                [showClear]="true"
+                [style]="{ width: '100%' }"
+            />
+            <p-button
+                label="Add Symptom"
+                (onClick)="addSymptom()"
+                [disabled]="!selectedSymptom"
+                
+            />
+                
+        </div>
+
+        <div class="terminal-container">
+            <div class="terminal-header">
+                <span>Recommended Actions</span>
+            </div>
+            <div class="terminal-content">
+                <div *ngFor="let fact of facts" class="terminal-line">
+                    <span class="terminal-prompt">></span>
+                    <span class="terminal-text" [ngClass]="fact.type">{{ fact.message }}</span>
+                </div>
+                <div *ngIf="facts.length === 0" class="terminal-line terminal-empty">
+                    <span class="terminal-text">Waiting for data...</span>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 1rem;">
+            <p-button size="large" label="Back" severity="secondary" (onClick)="goBack()" />
+        </div>
+    </div>
+</div>

@@ -90,7 +90,7 @@ when
 then
     System.out.println("!!! ALARMING REACTION - URGENT HOSPITALIZATION REQUIRED !!!");
     insert(new DiagnosisEvent(DiagnosisType.ALARMING_REACTION, System.currentTimeMillis()));
-    insert(new HospitalizationEvent(HospitalizationReason.ALARMING_REACTION, System.currentTimeMillis()));
+    insert(new HospitalizationEvent("!!! ALARMING REACTION - URGENT HOSPITALIZATION REQUIRED !!!", System.currentTimeMillis()));
     drools.halt();
 end
 
@@ -101,7 +101,7 @@ when
     DiagnosisEvent( type == DiagnosisType.LOCAL_REACTION )
 then
     System.out.println("Therapy: Cold compress recommended");
-    insert(new TherapyEvent(TherapyType.COLD_COMPRESS, System.currentTimeMillis()));
+    insert(new TherapyEvent("Therapy: Cold compress recommended", System.currentTimeMillis()));
 end
 
 rule "Therapy for mild reaction"
@@ -109,7 +109,7 @@ when
     DiagnosisEvent( type == DiagnosisType.MILD_REACTION )
 then
     System.out.println("Therapy: Physical measures (light clothing, cool room, fluids)");
-    insert(new TherapyEvent(TherapyType.PHYSICAL_MEASURES, System.currentTimeMillis()));
+    insert(new TherapyEvent("Therapy: Physical measures (light clothing, cool room, fluids)", System.currentTimeMillis()));
 end
 
 rule "Therapy for mild prolonged reaction"
@@ -117,7 +117,7 @@ when
     DiagnosisEvent( type == DiagnosisType.MILD_PROLONGED )
 then
     System.out.println("Therapy: Single dose of paracetamol");
-    insert(new TherapyEvent(TherapyType.PARACETAMOL_SINGLE_DOSE, System.currentTimeMillis()));
+    insert(new TherapyEvent("Therapy: Single dose of paracetamol", System.currentTimeMillis()));
 end
 
 rule "Therapy for moderate reaction - Ibuprofen"
@@ -126,7 +126,7 @@ when
     DiagnosisEvent( type == DiagnosisType.MODERATE_REACTION )
 then
     System.out.println("Therapy: Ibuprofen 10mg/kg, 3x daily");
-    insert(new TherapyEvent(TherapyType.IBUPROFEN, System.currentTimeMillis()));
+    insert(new TherapyEvent("Therapy: Ibuprofen 10mg/kg, 3x daily", System.currentTimeMillis()));
 end
 
 rule "Therapy for moderate reaction - Paracetamol"
@@ -135,7 +135,7 @@ when
     DiagnosisEvent( type == DiagnosisType.MODERATE_REACTION )
 then
     System.out.println("Therapy: Paracetamol syrup 10mg/kg, 3x daily");
-    insert(new TherapyEvent(TherapyType.PARACETAMOL_SYRUP, System.currentTimeMillis()));
+    insert(new TherapyEvent("Therapy: Paracetamol syrup 10mg/kg, 3x daily", System.currentTimeMillis()));
 end
 
 rule "Therapy for unusual reaction"
@@ -143,7 +143,7 @@ when
     DiagnosisEvent( type == DiagnosisType.UNUSUAL_REACTION )
 then
     System.out.println("Therapy: Pediatrician referral + physical measures");
-    insert(new TherapyEvent(TherapyType.PEDIATRICIAN_REFERRAL, System.currentTimeMillis()));
+    insert(new TherapyEvent("Therapy: Pediatrician referral + physical measures", System.currentTimeMillis()));
 end
 
 rule "Therapy for serious reaction"
@@ -151,7 +151,7 @@ when
     DiagnosisEvent( type == DiagnosisType.SERIOUS_REACTION )
 then
     System.out.println("!!! EMERGENCY CARE REQUIRED !!!");
-    insert(new TherapyEvent(TherapyType.EMERGENCY_CARE, System.currentTimeMillis()));
-    insert(new HospitalizationEvent(HospitalizationReason.SERIOUS_REACTION, System.currentTimeMillis()));
+    insert(new TherapyEvent("!!! EMERGENCY CARE REQUIRED !!!", System.currentTimeMillis()));
+    insert(new HospitalizationEvent("!!! EMERGENCY CARE REQUIRED !!!", System.currentTimeMillis()));
     drools.halt();
 end

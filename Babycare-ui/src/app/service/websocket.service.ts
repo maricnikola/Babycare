@@ -30,7 +30,7 @@ export class WebSocketService {
     this.client.activate();
   }
 
-  subscribeToTopic(topic: string): Observable<string> {
+subscribeToTopic(topic: string): Observable<string> {
     return new Observable<string>((observer) => {
       const doSub = () => {
         this.client.subscribe(topic, (message) => {
