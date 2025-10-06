@@ -22,6 +22,8 @@ public class ExaminationDTO {
     public Double temperature;
     public Integer heartRate;
     public Integer respirationRate;
+    public Double erythrocytes;
+    public Double crp;
     public Double headCircumference;
     public List<SymptomName> symptoms = new ArrayList<>();
 }

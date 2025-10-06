@@ -7,6 +7,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { InputNumber } from 'primeng/inputnumber';
 import { BabyService } from '../service/baby.service';
+import { WebSocketService } from '../service/websocket.service';
+import { Vaccination } from '../model/vaccination';
+import { Diagnosis } from '../model/diagnosis';
+import { Treatment } from '../model/treatment';
 
 @Component({
   selector: 'app-add-examination',
@@ -16,7 +20,7 @@ import { BabyService } from '../service/baby.service';
 })
 export class AddExamination {
   
-  constructor(private router: Router, private babyService: BabyService, private route: ActivatedRoute) {}
+  constructor(private router: Router, private babyService: BabyService, private route: ActivatedRoute, private socket: WebSocketService) {}
   selectedSymptoms: any[] = [];
   symptoms: { name: string; code: SymptomName }[] = [];
   temperature!: number;
@@ -25,13 +29,42 @@ export class AddExamination {
   heartRate!: number;
   respirationRate!: number;
   babyId!: number;
+  crp!: number;
+  erythrocytes!: number;
+
+  vaccinations: Vaccination[] = [];
+  diagnosis: Diagnosis[] = [];
+  treatments: Treatment[] = [];
+
   ngOnInit() {
     this.babyId = Number(this.route.snapshot.paramMap.get('babyId'));
     this.symptoms = Object.values(SymptomName).map((symptom) => ({
       name: this.formatSymptomName(symptom),
       code: symptom,
     }));
-  }
+     this.babyId = Number(this.route.snapshot.paramMap.get('babyId'));
+
+     this.socket.subscribeToTopic('/topic/rules/vaccination').subscribe((msg) => {
+      this.diagnosis = [];
+      this.treatments = [];
+
+        console.log('Received: ', msg);
+        const vaccination: Vaccination = JSON.parse(msg);
+        this.vaccinations.push(vaccination);
+     });
+      this.socket.subscribeToTopic('/topic/rules/diagnosis').subscribe((msg) => {
+      this.vaccinations = [];
+        console.log('Received: ', msg);
+        const d: Diagnosis = JSON.parse(msg);
+        this.diagnosis.push(d);
+     });
+      this.socket.subscribeToTopic('/topic/rules/treatment').subscribe((msg) => {
+      this.vaccinations = [];
+        console.log('Received: ', msg);
+        const treatment: Treatment = JSON.parse(msg);
+        this.treatments.push(treatment);
+     });
+    }
 
   formatSymptomName(symptom: string): string {
     return symptom
@@ -54,7 +87,9 @@ export class AddExamination {
       respirationRate: this.respirationRate,
       symptoms: this.selectedSymptoms.map(s => s.code)
     }
-    console.log(examination);
+    if(this.erythrocytes) examination.erythrocytes = this.erythrocytes;
+    if(this.crp) examination.crp = this.crp;
+    
     this.babyService.createExamination(this.babyId, examination).subscribe({
       next: (res) => console.log('Examination created:', res),
       error: (err) => console.error('Error:', err)

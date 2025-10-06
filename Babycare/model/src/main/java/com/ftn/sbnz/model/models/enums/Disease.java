@@ -19,7 +19,6 @@ public enum Disease {
     HEART_DEFECT("Heart defect"),
     URINARY_TRACT_INFECTION("Urinary tract infection");
 
-
     private final String name;
     Disease(String name) {
         this.name = name;

@@ -1,4 +1,4 @@
-<div class="main-container">
+<div class="main-container-ex">
     <div class="form-container">
         <h1> Create Examination </h1>
         <h4> Enter the information from the examination: </h4>
@@ -9,21 +9,68 @@
         
         <div class="flex-space-between items-center gap-4 mb">
             <label class="font-semibold w-24">Temperature</label>
-            <p-inputnumber  [minFractionDigits]="2" [maxFractionDigits]="5" mode="decimal" inputId="integeronly" [(ngModel)]="temperature" />
+            <p-inputnumber [min]="36.0" [max]="41.0" suffix=" C" [minFractionDigits]="2" [maxFractionDigits]="5" mode="decimal" inputId="integeronly" [(ngModel)]="temperature" />
             <label class="font-semibold w-24">Height</label>
-            <p-inputnumber  [minFractionDigits]="2" [maxFractionDigits]="5" mode="decimal" inputId="integeronly" [(ngModel)]="height" />
+            <p-inputnumber suffix=" cm" [min]="52" [max]="75" [minFractionDigits]="2" [maxFractionDigits]="5" mode="decimal" inputId="integeronly" [(ngModel)]="height" />
             <label class="font-semibold w-24">Weight</label>
-            <p-inputnumber  [minFractionDigits]="2" [maxFractionDigits]="5"  mode="decimal" inputId="integeronly" [(ngModel)]="weight" />
+            <p-inputnumber suffix=" kg" [min]="2.5" [max]="9.5"  [minFractionDigits]="2" [maxFractionDigits]="5"  mode="decimal" inputId="integeronly" [(ngModel)]="weight" />
         </div>
         <div class="flex-space-between items-center gap-4 mb">
             <label class="font-semibold w-24">Heart rate</label>
             <p-inputnumber  inputId="integeronly" [(ngModel)]="heartRate" />
             <label class="font-semibold w-24">Respiration rate  </label>
             <p-inputnumber  inputId="integeronly" [(ngModel)]="respirationRate" />
+            <label class="font-semibold w-24">CRP </label>
+            <p-inputnumber mode="decimal" [minFractionDigits]="0" [maxFractionDigits]="2" inputId="integeronly" [min]="2.5" [max]="6" suffix=" mg/L" [(ngModel)]="crp" />
+        </div>
+        <div class="flex-space-between items-center gap-4 mb">
+            <label class="font-semibold w-24">Erythrocytes</label>
+            <p-inputnumber [min]="2.5" [max]="6" mode="decimal" [minFractionDigits]="0" [maxFractionDigits]="2" suffix=" 10¹²/L" inputId="integeronly" [(ngModel)]="erythrocytes" />
         </div>
         <div class="btn-container gap-2">
                 <p-button size="large" label="Back" severity="secondary" (onClick)="goBack()" />
                 <p-button size="large" label="Save" (click)="addExamination()"/>
         </div>
     </div>
+    <div class="info-container">
+        <div class="height-info card-box">
+            <h2>Vaccinations</h2>
+            <h4 *ngIf="vaccinations.length === 0">There are currently no required vaccinations</h4>
+            <ul>
+                <li *ngFor="let v of vaccinations" style="padding: 5px 0;">
+                {{ v.vaccineName }} - {{ v.date }} - dose {{ v.dose }}
+                </li>
+            </ul>
+        </div>
+        <div class="height-info card-box">
+            <h2>Diagnosis</h2>
+            <h4 *ngIf="diagnosis.length === 0">There is currently no diagnosis.</h4>
+            <h4 *ngIf="diagnosis.length !== 0">Possible diagnosis:</h4>
+            <ul>
+                <li *ngFor="let d of diagnosis" style="padding: 5px 0;">
+                {{ d.disease }} - {{ d.date }} - threshold of disease in the system: {{ d.threshold }}
+                </li>
+            </ul>
+        </div>
+        <div class="height-info card-box">
+            <h2>Recommended Therapy</h2>
+            <h4 *ngIf="treatments.length === 0">There is currently no recommended therapy.</h4>
+            <ul>
+            <li *ngFor="let t of treatments" style="padding: 8px 0; list-style-type: none;">
+                <strong>Treatment type:</strong> {{ t.treatmentType }}  — <strong>Duration:</strong> {{ t.durationDays }} days  
+
+                <ul *ngIf="t.therapies && t.therapies.length > 0" style="margin-top: 6px; margin-left: 15px;">
+                <li *ngFor="let therapy of t.therapies" style="padding: 4px 0;">
+                    {{ therapy.name }} — {{ therapy.dose }} ({{ therapy.frequency }}) ({{ therapy.method }})
+                </li>
+                </ul>
+
+                <p *ngIf="!t.therapies || t.therapies.length === 0" style="margin-left: 15px; color: gray;">
+                    No therapies assigned.
+                </p>
+            </li>
+            </ul>
+        </div>
+    </div>
+
 </div>

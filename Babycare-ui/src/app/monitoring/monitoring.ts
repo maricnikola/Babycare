@@ -1,12 +1,8 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Listbox } from 'primeng/listbox';
-import { Examination, SymptomName } from '../model/examination';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
-import { InputNumber } from 'primeng/inputnumber';
-import { FloatLabel } from 'primeng/floatlabel';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { WebSocketService } from '../service/websocket.service'
 @Component({
@@ -35,7 +31,7 @@ export class Monitoring {
         
         this.facts.push({
             message: `Oxygen Therapy: ${this.checked ? 'ON' : 'OFF'}`,
-            type: this.checked ? 'success' : 'error'  // Zeleno ako ON, crveno ako OFF
+            type: this.checked ? 'success' : 'error'  
         });
         
         this.facts.push({
@@ -47,8 +43,8 @@ export class Monitoring {
   constructor(private router: Router, private route: ActivatedRoute, private socket: WebSocketService) {}
   ngOnInit() {
     this.babyId = Number(this.route.snapshot.paramMap.get('babyId'));
-    this.socket.subscribeToTopic('/topic/greetings').subscribe((msg) => {
-                console.log('Received: ', msg);
+    this.socket.subscribeToTopic('/topic/rules').subscribe((msg) => {
+      console.log('Received: ', msg);
     });
   }
   goBack() {
