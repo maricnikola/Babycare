@@ -320,7 +320,7 @@ when
         sum($w)
     )
 then
-    Diagnosis diagnosis = new Diagnosis(null, Disease.ASTHMA, LocalDate.now(), 12);
+    Diagnosis diagnosis = new Diagnosis(null, Disease.ANEMIA, LocalDate.now(), 12);
     java.util.List<Diagnosis> updated = new java.util.ArrayList<>($b.getDiagnoses());
     updated.add(diagnosis);
     modify($b){ setDiagnoses(updated) }

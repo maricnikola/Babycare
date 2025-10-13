@@ -47,7 +47,7 @@ export class PostVaccination {
   ngOnInit() {
     this.babyId = Number(this.route.snapshot.paramMap.get('babyId'));
 
-    this.socket.subscribeToTopic('/topic/alarm').subscribe((msg) => {
+    this.socket.subscribeToTopic('/topic/alarm-vaccination').subscribe((msg) => {
       console.log('Received: ', msg);  
       this.facts.push({
           message: `ALERT: ${msg}`,

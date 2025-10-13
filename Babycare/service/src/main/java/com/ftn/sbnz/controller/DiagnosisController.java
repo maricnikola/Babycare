@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @RestController
@@ -42,7 +43,7 @@ public class DiagnosisController {
             return ResponseEntity.badRequest()
                     .body(Map.of("error", "No examination found for this baby"));
         }
-        LocalDate twoDaysAgo = LocalDate.now().minusDays(2);
+        LocalDateTime twoDaysAgo = LocalDateTime.now().minusDays(2);
         if (examination.getExamDate().isBefore(twoDaysAgo)) {
             return ResponseEntity.badRequest()
                     .body(Map.of("error", "Last examination must not be older than 2 days"));

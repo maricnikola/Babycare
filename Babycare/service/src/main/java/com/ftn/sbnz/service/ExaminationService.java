@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,7 +43,6 @@ public class ExaminationService {
 
     public Examination addExamination(Baby baby, ExaminationDTO examinationDTO) throws IOException {
         Examination examination = new Examination();
-        examination.setExamDate(examinationDTO.getExamDate());
         examination.setHeight(examinationDTO.getHeight());
         examination.setWeight(examinationDTO.getWeight());
         examination.setTemperature(examinationDTO.getTemperature());
@@ -53,7 +53,7 @@ public class ExaminationService {
         List<Symptom> symptoms = mapToSymptoms(examinationDTO.getSymptoms());
         examination.setSymptoms(symptoms);
         examination.setReports(new ArrayList<>());
-        examination.setExamDate(LocalDate.now());
+        examination.setExamDate(LocalDateTime.now());
         examination.setBaby(baby);
 
         baby.getExaminations().add(examination);

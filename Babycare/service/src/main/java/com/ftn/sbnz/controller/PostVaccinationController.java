@@ -55,7 +55,7 @@ public class PostVaccinationController {
             public void objectInserted(ObjectInsertedEvent event) {
                 Object fact = event.getObject();
                 if (fact instanceof HospitalizationEvent) {
-                    webSocketService.sendToTopic("/topic/alarm",  ((HospitalizationEvent) fact).getReason());
+                    webSocketService.sendToTopic("/topic/alarm-vaccination",  ((HospitalizationEvent) fact).getReason());
                 } else if (fact instanceof TherapyEvent) {
                     webSocketService.sendToTopic("/topic/therapy", ((TherapyEvent) fact).getTherapy());
                 }
