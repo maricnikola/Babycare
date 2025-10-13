@@ -1,13 +1,18 @@
 package com.ftn.sbnz.service;
 
 import com.ftn.sbnz.model.dtos.ExaminationDTO;
-import com.ftn.sbnz.model.models.Baby;
-import com.ftn.sbnz.model.models.Examination;
-import com.ftn.sbnz.model.models.Symptom;
+import com.ftn.sbnz.model.dtos.FiredRuleDTO;
+import com.ftn.sbnz.model.models.*;
 import com.ftn.sbnz.model.models.enums.SymptomName;
 import com.ftn.sbnz.model.util.KnowledgeSessionHelper;
+import com.ftn.sbnz.repository.IBabyRepository;
 import com.ftn.sbnz.repository.IExaminationRepository;
+import org.drools.core.event.DefaultAgendaEventListener;
+import org.drools.core.event.DefaultRuleRuntimeEventListener;
 import org.drools.decisiontable.ExternalSpreadsheetCompiler;
+import org.kie.api.event.rule.AfterMatchFiredEvent;
+import org.kie.api.event.rule.ObjectInsertedEvent;
+import org.kie.api.event.rule.ObjectUpdatedEvent;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
@@ -18,6 +23,8 @@ import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,21 +34,26 @@ public class ExaminationService {
 
     @Autowired
     private KieContainer kieContainer;
+    @Autowired
+    private IBabyRepository babyRepository;
     @Inject
     private IExaminationRepository repository;
+    @Autowired
+    private WebSocketService webSocketService;
 
     public Examination addExamination(Baby baby, ExaminationDTO examinationDTO) throws IOException {
         Examination examination = new Examination();
-        examination.setExamDate(examinationDTO.getExamDate());
         examination.setHeight(examinationDTO.getHeight());
         examination.setWeight(examinationDTO.getWeight());
         examination.setTemperature(examinationDTO.getTemperature());
         examination.setHeartRate(examinationDTO.getHeartRate());
         examination.setRespirationRate(examinationDTO.getRespirationRate());
+        examination.setErythrocytes(examinationDTO.getErythrocytes());
+        examination.setCrp(examinationDTO.getCrp());
         List<Symptom> symptoms = mapToSymptoms(examinationDTO.getSymptoms());
         examination.setSymptoms(symptoms);
         examination.setReports(new ArrayList<>());
-
+        examination.setExamDate(LocalDateTime.now());
         examination.setBaby(baby);
 
         baby.getExaminations().add(examination);
@@ -61,12 +73,16 @@ public class ExaminationService {
 
         KieSession kieSession = kieHelper.build().newKieSession();
 
-        kieSession.insert(baby);
+        attachWebSocket(kieSession);
+        attachDiagnosisWebSocket(kieSession);
         kieSession.insert(examination);
+        kieSession.insert(baby);
         kieSession.fireAllRules();
         kieSession.dispose();
+        repository.save(examination);
         return examination;
     }
+
     public void addVaccination(Baby baby, Examination examination){
         KieSession kieSession = KnowledgeSessionHelper.getStatefulKnowledgeSession(kieContainer, "test-session");
         kieSession.insert(baby);
@@ -74,7 +90,6 @@ public class ExaminationService {
         kieSession.fireAllRules();
         kieSession.dispose();
 
-        repository.save(examination);
     }
 
     public static List<Symptom> mapToSymptoms(List<SymptomName> symptomNames) {
@@ -87,4 +102,48 @@ public class ExaminationService {
                 })
                 .collect(Collectors.toList());
     }
+
+    public Examination findLastExaminationForBaby(Long babyId) {
+        return repository.findTopByBabyIdOrderByExamDateDesc(babyId);
+    }
+
+    private void attachWebSocket(KieSession kieSession) {
+        kieSession.addEventListener(new DefaultAgendaEventListener() {
+            @Override
+            public void afterMatchFired(AfterMatchFiredEvent event) {
+                Vaccination vaccination = event.getMatch().getObjects().stream()
+                        .filter(Vaccination.class::isInstance)
+                        .map(Vaccination.class::cast)
+                        .findFirst()
+                        .orElse(null);
+                Therapy therapy = event.getMatch().getObjects().stream()
+                        .filter(Therapy.class::isInstance)
+                        .map(Therapy.class::cast)
+                        .findFirst()
+                        .orElse(null);
+//                if(vaccination != null) webSocketService.sendToTopic("/topic/rules/vaccination", vaccination);
+//                if(therapy != null) webSocketService.sendToTopic("/topic/rules/therapy", therapy);
+            }
+        });
+    }
+    private void attachDiagnosisWebSocket(KieSession kieSession){
+        kieSession.addEventListener(new DefaultRuleRuntimeEventListener() {
+            @Override
+            public void objectInserted(ObjectInsertedEvent event) {
+                Object fact = event.getObject();
+                if (fact instanceof Diagnosis) {
+                    Diagnosis diagnosis = (Diagnosis) fact;
+                    if(diagnosis != null) webSocketService.sendToTopic("/topic/rules/diagnosis", diagnosis);
+                }else if(fact instanceof Vaccination){
+                    Vaccination vaccination = (Vaccination) fact;
+                    if(vaccination != null) webSocketService.sendToTopic("/topic/rules/vaccination", vaccination);
+                }else if(fact instanceof  Treatment){
+                    Treatment treatment = (Treatment) fact;
+                    if(treatment != null) webSocketService.sendToTopic("/topic/rules/treatment", treatment);
+                }
+            }
+        });
+    }
+
+
 }

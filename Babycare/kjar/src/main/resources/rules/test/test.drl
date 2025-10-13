@@ -3,27 +3,36 @@ import com.ftn.sbnz.model.models.Baby;
 import com.ftn.sbnz.model.models.Examination;
 import com.ftn.sbnz.model.models.Diagnosis;
 import com.ftn.sbnz.model.dtos.ExaminationDTO;
+import com.ftn.sbnz.model.dtos.FiredRuleDTO;
 import com.ftn.sbnz.model.models.enums.VaccinationType;
 import com.ftn.sbnz.model.models.Symptom
 import com.ftn.sbnz.model.models.enums.SymptomName
 import com.ftn.sbnz.model.models.Vaccination
 import java.time.LocalDate
-import java.util.ArrayList;
-
+import java.util.ArrayList
+import com.ftn.sbnz.model.models.Therapy;
+import com.ftn.sbnz.model.models.enums.Method
+import com.ftn.sbnz.model.models.enums.TreatmentType
+import com.ftn.sbnz.model.models.enums.Disease
+import com.ftn.sbnz.model.models.Treatment
+import java.util.HashSet;
 
 
 rule "Second Dose Euvax B and BCG After 1 Month"
 when
-    $b: Baby()
     $e: Examination(symptoms.isEmpty() && getAgeAtExamDays() >= 29 && getAgeAtExamDays() <= 31)
 then
-    Vaccination vaccination = new Vaccination(null, VaccinationType.EUVAX_B, LocalDate.now(), 2);
-    java.util.List<Vaccination> updated = new java.util.ArrayList<>($b.getVaccinations());
-    updated.add(vaccination);
-//    insert(vaccination)
-    modify($b){ setVaccinations(updated) }
+    Vaccination vaccination1 = new Vaccination(null, VaccinationType.EUVAX_B, LocalDate.now(), 2);
+    Vaccination vaccination2 = new Vaccination(null, VaccinationType.BCG, LocalDate.now(), 1);
 
-    System.out.println("Baby " + $b.firstName + " " + $b.lastName + " is ready for second dose of Euvax B vaccination.");
+    java.util.List<Vaccination> updated = new java.util.ArrayList<>($e.getBaby().getVaccinations());
+    updated.add(vaccination1);
+    updated.add(vaccination2);
+//    modify($b){ setVaccinations(updated) }
+    insert(vaccination1);
+    insert(vaccination2);
+
+    System.out.println("Baby " + $e.getBaby().firstName + " " + $e.getBaby().lastName + " is ready for second dose of Euvax B vaccination.");
 end
 
 rule "First Dose Pentaximm and First Dose Sinflorix After 2 Months"
@@ -31,10 +40,15 @@ when
     $b: Baby()
     $e: Examination(symptoms.isEmpty() && getAgeAtExamDays() >= 59 && getAgeAtExamDays() <= 61)
 then
-    Vaccination vaccination = new Vaccination(null, VaccinationType.EUVAX_B, LocalDate.now(), 2);
+    Vaccination vaccination1 = new Vaccination(null, VaccinationType.PENTAXIM, LocalDate.now(), 1);
+    Vaccination vaccination2 = new Vaccination(null, VaccinationType.SYNFLORIX, LocalDate.now(), 1);
+
     java.util.List<Vaccination> updated = new java.util.ArrayList<>($b.getVaccinations());
-    updated.add(vaccination);
-    modify($b){ setVaccinations(updated) }
+    updated.add(vaccination1);
+    updated.add(vaccination2);
+//    modify($b){ setVaccinations(updated) }
+    insert(vaccination1);
+    insert(vaccination2);
 
     System.out.println("Baby " + $b.firstName + " " + $b.lastName + " is ready for second dose of Euvax B vaccination.");
 end
@@ -44,10 +58,11 @@ when
     $b: Baby()
     $e: Examination(symptoms.isEmpty() && getAgeAtExamDays() >= 99 && getAgeAtExamDays() <= 101)
 then
-    Vaccination vaccination = new Vaccination(null, VaccinationType.EUVAX_B, LocalDate.now(), 2);
+    Vaccination vaccination = new Vaccination(null, VaccinationType.PENTAXIM, LocalDate.now(), 2);
     java.util.List<Vaccination> updated = new java.util.ArrayList<>($b.getVaccinations());
     updated.add(vaccination);
-    modify($b){ setVaccinations(updated) }
+//    modify($b){ setVaccinations(updated) }
+    insert(vaccination);
 
     System.out.println("Baby " + $b.firstName + " " + $b.lastName + " is ready for second dose of Euvax B vaccination.");
 end
@@ -57,10 +72,11 @@ when
     $b: Baby()
     $e: Examination(symptoms.isEmpty() && getAgeAtExamDays() >= 139 && getAgeAtExamDays() <= 141)
 then
-    Vaccination vaccination = new Vaccination(null, VaccinationType.EUVAX_B, LocalDate.now(), 2);
+    Vaccination vaccination = new Vaccination(null, VaccinationType.PENTAXIM, LocalDate.now(), 3);
     java.util.List<Vaccination> updated = new java.util.ArrayList<>($b.getVaccinations());
     updated.add(vaccination);
-    modify($b){ setVaccinations(updated) }
+//    modify($b){ setVaccinations(updated) }
+    insert(vaccination);
 
     System.out.println("Baby " + $b.firstName + " " + $b.lastName + " is ready for second dose of Euvax B vaccination.");
 end
@@ -70,18 +86,143 @@ when
     $b: Baby()
     $e: Examination(symptoms.isEmpty() && getAgeAtExamDays() >= 179 && getAgeAtExamDays() <= 181)
 then
-    Vaccination vaccination = new Vaccination(null, VaccinationType.EUVAX_B, LocalDate.now(), 2);
+    Vaccination vaccination = new Vaccination(null, VaccinationType.EUVAX_B, LocalDate.now(),3);
     java.util.List<Vaccination> updated = new java.util.ArrayList<>($b.getVaccinations());
     updated.add(vaccination);
-    modify($b){ setVaccinations(updated) }
+//    modify($b){ setVaccinations(updated) }
+    insert(vaccination);
 
     System.out.println("Baby " + $b.firstName + " " + $b.lastName + " is ready for second dose of Euvax B vaccination.");
 end
 
+rule "Possible Esophageal Stenosis"
+when
+    $e : Examination(
+                  $symptoms: symptoms,
+                  $b: baby
+    )
+     $totalWeight : Number(intValue > 15) from accumulate(
+            Symptom($w : weight,
+                    name == SymptomName.VOMITING_IN_STREAM ||
+                    name == SymptomName.FAILURE_TO_THRIVE ||
+                    name == SymptomName.PALE_SKIN||
+                    name == SymptomName.COUGH)
+            from $symptoms,
+            sum($w)
+        )
+then
+    Diagnosis diagnosis = new Diagnosis(null, Disease.ESOPHAGEAL_STENOSIS, LocalDate.now(), 15);
+    java.util.List<Diagnosis> updated = new java.util.ArrayList<>($b.getDiagnoses());
+    updated.add(diagnosis);
+    modify($b){ setDiagnoses(updated) }
+    insert(diagnosis);
+    System.out.println("Possible Esophageal Stenosis Disease");
+end
+
+rule "Possible Penfigus Disease"
+when
+    $e : Examination(
+                  $symptoms: symptoms,
+                  $b: baby
+    )
+     $totalWeight : Number(intValue > 11) from accumulate(
+            Symptom($w : weight,
+                    name == SymptomName.PIMPLED_SKIN ||
+                    name == SymptomName.REDDNES_OF_SKIN ||
+                    name == SymptomName.MILD_FEVER||
+                    name == SymptomName.MODERATE_FEVER)
+            from $symptoms,
+            sum($w)
+        )
+then
+    Diagnosis diagnosis = new Diagnosis(null, Disease.PENFIGUS, LocalDate.now(), 11);
+    java.util.List<Diagnosis> updated = new java.util.ArrayList<>($b.getDiagnoses());
+    updated.add(diagnosis);
+    modify($b){ setDiagnoses(updated) }
+    insert(diagnosis);
+    System.out.println("Possible Penfigus Disease");
+end
+
+rule "Possible Urinary Tract Infection"
+when
+    $e : Examination(
+                  $symptoms: symptoms,
+                  $b: baby
+    )
+     $totalWeight : Number(intValue > 15) from accumulate(
+            Symptom($w : weight,
+                    name == SymptomName.PALE_SKIN ||
+                    name == SymptomName.HIGH_FEVER ||
+                    name == SymptomName.BLOOD_IN_URINE ||
+                    name == SymptomName.UNPLEASANT_URINE_ODOR)
+            from $symptoms,
+            sum($w)
+        )
+then
+    Diagnosis diagnosis = new Diagnosis(null, Disease.URINARY_TRACT_INFECTION, LocalDate.now(), 7);
+    java.util.List<Diagnosis> updated = new java.util.ArrayList<>($b.getDiagnoses());
+    updated.add(diagnosis);
+    modify($b){ setDiagnoses(updated) }
+    insert(diagnosis);
+    System.out.println("Possible Urinary Tract Infection");
+end
+
+rule "Possible Heart Defect"
+when
+    $e : Examination(
+                  $symptoms: symptoms,
+                  $b: baby
+    )
+     $totalWeight : Number(intValue > 7) from accumulate(
+            Symptom($w : weight,
+                    name == SymptomName.BLUE_MOUTH ||
+                    name == SymptomName.FAILURE_TO_THRIVE ||
+                    name == SymptomName.SWEATING)
+            from $symptoms,
+            sum($w)
+        )
+then
+    Diagnosis diagnosis = new Diagnosis(null, Disease.HEART_DEFECT, LocalDate.now(), 7);
+    java.util.List<Diagnosis> updated = new java.util.ArrayList<>($b.getDiagnoses());
+    updated.add(diagnosis);
+    modify($b){ setDiagnoses(updated) }
+    insert(diagnosis);
+    System.out.println("Possible Heart Defect");
+end
+
+rule "Possible Physiological Jaundice"
+when
+    $e : Examination(
+                  $symptoms: symptoms,
+                  $b: baby
+    )
+
+     $totalWeight : Number(intValue > 12) from accumulate(
+            Symptom($w : weight,
+                    name == SymptomName.MILD_FEVER||
+                    name == SymptomName.YELLOW_SKIN ||
+                    name == SymptomName.MODERATE_FEVER ||
+                    name == SymptomName.TACHYCARDIA ||
+                    name == SymptomName.FATIGUE)
+            from $symptoms,
+            sum($w)
+        )
+     exists (Diagnosis(disease == Disease.PNEUMONIA) from $b.getDiagnoses())
+then
+    Diagnosis diagnosis = new Diagnosis(null, Disease.PHYSIOLOGICAL_JAUNDICE, LocalDate.now(), 7);
+    java.util.List<Diagnosis> updated = new java.util.ArrayList<>($b.getDiagnoses());
+    updated.add(diagnosis);
+    modify($b){ setDiagnoses(updated) }
+    insert(diagnosis);
+    System.out.println("Possible Physiological Jaundice detected");
+end
 
 rule "Possible Bronchiolitis Detection"
 when
-    $e: Examination($symptoms : symptoms)
+    $e : Examination(
+                $symptoms : symptoms,
+                $b : baby
+    )
     $totalWeight : Number(intValue > 7) from accumulate(
         Symptom($w : weight,
                 name == SymptomName.MILD_FEVER ||
@@ -96,13 +237,21 @@ when
         sum($w)
     )
 then
+    Diagnosis diagnosis = new Diagnosis(null, Disease.BRONHIOLITIS, LocalDate.now(), 7);
+    java.util.List<Diagnosis> updated = new java.util.ArrayList<>($b.getDiagnoses());
+    updated.add(diagnosis);
+    modify($b){ setDiagnoses(updated) }
+    insert(diagnosis);
     System.out.println("Possible Bronchiolitis detected");
 end
 
 rule "Possible Pneumonia Detection"
 when
-    $e: Examination($symptoms : symptoms)
-    $totalWeight : Number(intValue > 7) from accumulate(
+    $e : Examination(
+            $symptoms : symptoms,
+            $b : baby
+    )
+    $totalWeight : Number(intValue > 12) from accumulate(
         Symptom($w : weight,
                 name == SymptomName.HIGH_FEVER ||
                 name == SymptomName.TACHYCARDIA ||
@@ -116,14 +265,23 @@ when
         from $symptoms,
         sum($w)
     )
+    exists (Diagnosis(disease == Disease.BRONHIOLITIS) from $b.getDiagnoses())
 then
+    Diagnosis diagnosis = new Diagnosis(null, Disease.PNEUMONIA, LocalDate.now(), 7);
+    java.util.List<Diagnosis> updated = new java.util.ArrayList<>($b.getDiagnoses());
+    updated.add(diagnosis);
+    modify($b){ setDiagnoses(updated) }
+    insert(diagnosis);
     System.out.println("Possible Pneumonia detected");
 end
 
 rule "Possible Astma Detection"
 when
-    $e: Examination($symptoms : symptoms)
-    $totalWeight : Number(intValue > 7) from accumulate(
+    $e : Examination(
+               $symptoms : symptoms,
+               $b : baby
+    )
+    $totalWeight : Number(intValue > 11) from accumulate(
         Symptom($w : weight,
                 name == SymptomName.COUGH ||
                 name == SymptomName.DYSPNEA ||
@@ -132,23 +290,162 @@ when
         from $symptoms,
         sum($w)
     )
+    $bronhiolitisCount : Number(intValue > 3) from accumulate(
+            Diagnosis(disease == Disease.BRONHIOLITIS) from $b.getDiagnoses(),
+            count(1)
+    )
 then
+    Diagnosis diagnosis = new Diagnosis(null, Disease.ASTHMA, LocalDate.now(), 7);
+    java.util.List<Diagnosis> updated = new java.util.ArrayList<>($b.getDiagnoses());
+    updated.add(diagnosis);
+    modify($b){ setDiagnoses(updated) }
+    insert(diagnosis);
     System.out.println("Possible Astma detected");
 end
 
 rule "Possible Anemia Detection"
 when
-    $e: Examination($symptoms : symptoms)
-    $totalWeight : Number(intValue > 7) from accumulate(
+     $e : Examination(
+                $symptoms : symptoms,
+                $b : baby
+     )
+    $totalWeight : Number(intValue > 15) from accumulate(
         Symptom($w : weight,
                 name == SymptomName.APPETITE_LOSS ||
                 name == SymptomName.FATIGUE ||
                 name == SymptomName.PALE_SKIN ||
-                name == SymptomName.TACHYCARDIA)
+                name == SymptomName.TACHYCARDIA ||
+                name == SymptomName.LOW_ERITROCYTES)
         from $symptoms,
         sum($w)
     )
 then
+    Diagnosis diagnosis = new Diagnosis(null, Disease.ANEMIA, LocalDate.now(), 12);
+    java.util.List<Diagnosis> updated = new java.util.ArrayList<>($b.getDiagnoses());
+    updated.add(diagnosis);
+    modify($b){ setDiagnoses(updated) }
+    insert(diagnosis);
     System.out.println("Possible Anemia detected");
 end
+
+rule "Therapy for Bronhiolitis"
+when
+    $d: Diagnosis(disease == Disease.BRONHIOLITIS)
+then
+    Treatment treatment = new Treatment(null,TreatmentType.HOSPITAL, 7, new HashSet<>());
+    insert(treatment);
+end
+
+rule "Therapy for Asthma"
+when
+    $d: Diagnosis(disease == Disease.ASTHMA)
+then
+    Therapy therapy1 = new Therapy(null, "Bronhodilatator", 1, 7, Method.INHALATION);
+    Therapy therapy2 = new Therapy(null, "Pulmikort", 1, 30, Method.SYRUP);
+    Therapy therapy3 = new Therapy(null, "Fliksotide", 1, 30, Method.INHALATION);
+    HashSet<Therapy> therapies = new HashSet<>();
+    therapies.add(therapy1);
+    therapies.add(therapy2);
+    therapies.add(therapy3);
+    Treatment treatment = new Treatment(null,TreatmentType.HOSPITAL, 7, therapies);
+    insert(treatment);
+end
+
+rule "Therapy for Anemia"
+when
+    $d: Diagnosis(disease == Disease.ANEMIA)
+then
+    Therapy therapy1 = new Therapy(null, "Iron Preparations", 5, 1, Method.TABLET);
+    Therapy therapy2 = new Therapy(null, "Folic Acid", 1, 1, Method.TABLET);
+    Therapy therapy3 = new Therapy(null, "Vitamin C", 1, 1, Method.TABLET);
+    HashSet<Therapy> therapies = new HashSet<>();
+    therapies.add(therapy1);
+    therapies.add(therapy2);
+    therapies.add(therapy3);
+    Treatment treatment = new Treatment(null,TreatmentType.HOSPITAL, 7, therapies);
+    insert(treatment);
+end
+
+rule "Therapy for Physiological Jaundice"
+when
+    $d: Diagnosis(disease == Disease.PHYSIOLOGICAL_JAUNDICE)
+then
+    Therapy therapy1 = new Therapy(null, "Photo Lamp", 1, 1, null);
+    Therapy therapy2 = new Therapy(null, "Infusion", 1, 1, Method.INTRAVENOUSLY);
+    HashSet<Therapy> therapies = new HashSet<>();
+    therapies.add(therapy1);
+    therapies.add(therapy2);
+    Treatment treatment = new Treatment(null,TreatmentType.HOSPITAL, 7, therapies);
+    insert(treatment);
+end
+
+rule "Therapy for Heart Defect"
+when
+    $d: Diagnosis(disease == Disease.PHYSIOLOGICAL_JAUNDICE)
+then
+    Therapy therapy1 = new Therapy(null, "Possible heart operation", 1, 1, null);
+    HashSet<Therapy> therapies = new HashSet<>();
+    therapies.add(therapy1);
+    Treatment treatment = new Treatment(null,TreatmentType.EMERGENCY, 7, therapies);
+    insert(treatment);
+end
+
+rule "Therapy for Mild Pneumonia"
+when
+    $d: Diagnosis(disease == Disease.PNEUMONIA)
+    $e : Examination($symptoms : symptoms)
+    not (Symptom(name == SymptomName.COUGH) from $symptoms)
+then
+    Therapy therapy1 = new Therapy(null, "Amoksicilin", 1, 3, Method.TABLET);
+    Therapy therapy2 = new Therapy(null, "Paracetamol", 1, 3, Method.TABLET);
+    HashSet<Therapy> therapies = new HashSet<>();
+    therapies.add(therapy1);
+    therapies.add(therapy2);
+    Treatment treatment = new Treatment(null,TreatmentType.HOME, 7, therapies);
+    insert(treatment);
+end
+
+rule "Therapy for Pneumonia with Cough"
+when
+    $d: Diagnosis(disease == Disease.PNEUMONIA)
+    $e : Examination($symptoms : symptoms)
+    exists (Symptom(name == SymptomName.COUGH) from $symptoms)
+then
+    Therapy therapy1 = new Therapy(null, "Oxygen", 1, 3, Method.INHALATION);
+    Therapy therapy2 = new Therapy(null, "Ceftriakson", 1, 3, Method.INTRAVENOUSLY);
+    HashSet<Therapy> therapies = new HashSet<>();
+    therapies.add(therapy1);
+    therapies.add(therapy2);
+    Treatment treatment = new Treatment(null,TreatmentType.HOSPITAL, 7, therapies);
+    insert(treatment);
+end
+
+rule "Therapy for Urinary Tract Infection"
+when
+    $d: Diagnosis(disease == Disease.URINARY_TRACT_INFECTION)
+then
+    Therapy therapy1 = new Therapy(null, "Ampicilin", 1, 3, null);
+    Therapy therapy2 = new Therapy(null, "Cefalosporin", 1, 3, null);
+    Therapy therapy3 = new Therapy(null, "Amikacin", 1, 3, null);
+    HashSet<Therapy> therapies = new HashSet<>();
+    therapies.add(therapy1);
+    therapies.add(therapy2);
+    therapies.add(therapy3);
+    Treatment treatment = new Treatment(null,TreatmentType.HOME, 15, therapies);
+    insert(treatment);
+end
+
+rule "Guide for Esophageal Stenosis"
+when
+    $d: Diagnosis(disease == Disease.ESOPHAGEAL_STENOSIS)
+then
+    Therapy therapy1 = new Therapy(null, "Stomach Scan", 1, 3, null);
+    HashSet<Therapy> therapies = new HashSet<>();
+    therapies.add(therapy1);
+    Treatment treatment = new Treatment(null,TreatmentType.HOME, 15, therapies);
+    insert(treatment);
+end
+
+
+
 

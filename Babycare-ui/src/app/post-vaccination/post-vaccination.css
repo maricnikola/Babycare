@@ -1,0 +1,114 @@
+.form-container{
+    width: 70%;
+    ;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.btn-container{
+    display: flex;
+    justify-content: space-between;
+    width: 40%;
+}
+:host ::ng-deep p-inputnumber input{
+    max-width: 15rem !important;
+    min-width: 15rem !important;
+}
+:host ::ng-deep .flex-space-between{
+    display: flex !important;
+    justify-content: space-evenly !important;
+}
+:host ::ng-deep .p-button{
+    min-width: 10rem !important;
+}
+.mb{
+    margin-bottom: 50px;
+}
+
+
+.terminal-container {
+    min-width: 50rem;
+    margin-top: 2rem;
+    border: 1px solid #333;
+    border-radius: 8px;
+    background-color: #1e1e1e;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.terminal-header {
+    background-color: #2d2d2d;
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid #333;
+    color: #fff;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+}
+
+.terminal-content {
+    padding: 1rem;
+    min-height: 200px;
+    max-height: 400px;
+    overflow-y: auto;
+    font-family: 'Courier New', monospace;
+    background-color: #0a0a0a;
+}
+
+.terminal-line {
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: flex-start;
+}
+
+.terminal-prompt {
+    color: #00ff00;
+    margin-right: 0.5rem;
+    font-weight: bold;
+}
+
+.terminal-text {
+    word-break: break-word;
+}
+
+/* Različite boje za različite tipove poruka */
+.terminal-text.success {
+    color: #00ff00;
+}
+
+.terminal-text.warning {
+    color: #ffaa00;
+}
+
+.terminal-text.error {
+    color: #ff4444;
+}
+
+.terminal-text.info {
+    color: #00aaff;
+}
+
+.terminal-text.separator {
+    color: #666;
+}
+
+.terminal-empty {
+    color: #666;
+    font-style: italic;
+}
+
+.terminal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.terminal-content::-webkit-scrollbar-track {
+    background: #1e1e1e;
+}
+
+.terminal-content::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 4px;
+}
+
+.terminal-content::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}

@@ -10,6 +10,7 @@ import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class DiagnosisService {
@@ -45,8 +46,11 @@ public class DiagnosisService {
         KieSession kSession = KnowledgeSessionHelper.getStatefulKnowledgeSession(kieContainer, "bwKsession");
 
         KNOWLEDGE_GRAPH.forEach(kSession::insert);
+        List<String> facts = examination.getSymptoms().
+                    stream().map( s -> s.getName().name()).
+                    collect(Collectors.toList());
 
-        return kSession.getQueryResults(disease.getName(), examination)
+        return kSession.getQueryResults(disease.getName(), facts)
                 .iterator()
                 .hasNext();
     }

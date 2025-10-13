@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,12 +17,14 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ExaminationDTO {
-    private LocalDate examDate;
+    private LocalDateTime examDate;
     private Double height;
     private Double weight;
     public Double temperature;
     public Integer heartRate;
     public Integer respirationRate;
+    public Double erythrocytes;
+    public Double crp;
     public Double headCircumference;
     public List<SymptomName> symptoms = new ArrayList<>();
 }

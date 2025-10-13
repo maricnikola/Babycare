@@ -2,11 +2,15 @@ package com.ftn.sbnz.model.dtos;
 
 import com.ftn.sbnz.model.models.Baby;
 import com.ftn.sbnz.model.models.enums.Gender;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class BabyDTO {
     private Long id;
     private String firstName;

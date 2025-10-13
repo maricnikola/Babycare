@@ -1,0 +1,27 @@
+<div style="display: flex; align-items: center; gap: 1rem; margin-top: 2rem;">
+
+    <p-select
+    id="disease"
+    [(ngModel)]="selectedDisease"
+    [options]="diseaseOptions"
+    optionLabel="label"
+    optionValue="value"
+    placeholder="Choose a disease"
+    [checkmark]="true"
+    [showClear]="true"
+    [style]="{ width: '100%' }"
+    />
+    <p-button
+    label="Check Disease"
+    (onClick)="checkDisease()"
+    [disabled]="!selectedDisease || !selectedBabyId || loading"
+    [loading]="loading"
+    />
+    <p-toast/>
+</div>
+
+<div style="margin-top: 1rem; display: flex; gap: 1rem; flex-direction: column;" >
+    <p-message severity="success"  *ngIf="success !== ''">{{success}}</p-message>
+    <p-message severity="warn" *ngIf="warn !== ''">{{warn}}</p-message>
+    <p-message severity="error" *ngIf="error !== ''">{{error}}</p-message>
+</div>

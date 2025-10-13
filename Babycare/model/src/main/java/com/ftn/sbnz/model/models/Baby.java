@@ -1,5 +1,6 @@
 package com.ftn.sbnz.model.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ftn.sbnz.model.models.enums.ExaminationType;
 import com.ftn.sbnz.model.models.enums.Gender;
 import com.ftn.sbnz.model.models.enums.VaccinationType;
@@ -37,6 +38,7 @@ public class Baby {
     private List<Vaccination> vaccinations = new ArrayList<>();
 
     @OneToMany
+    @JsonManagedReference
     private List<Examination> examinations;
 
     public Examination getLastExamination() {

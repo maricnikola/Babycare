@@ -2,8 +2,11 @@
     <kbase name="bwBase" packages="backward">
         <ksession name="bwKsession"/>
     </kbase>
-    <kbase name="cepKbase" eventProcessingMode="stream" packages="cep">
-        <ksession name="cepKsession" clockType="pseudo"/>
+    <kbase name="vitalSingsCepKbase" eventProcessingMode="stream" packages="vitalSingsCep">
+        <ksession name="vitalSingsCepKsession" clockType="realtime"/>
+    </kbase>
+    <kbase name="postVaccinationCepKbase" eventProcessingMode="stream" packages="postVaccinationCep">
+        <ksession name="postVaccinationCepKsession" clockType="realtime"/>
     </kbase>
     <kbase name="rules" packages="test">
         <ksession name="test-session"/>

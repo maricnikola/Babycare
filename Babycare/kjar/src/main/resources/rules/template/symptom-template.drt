@@ -4,6 +4,7 @@ minValue
 maxValue
 symptomName
 message
+symptomWeight
 
 package template
 
@@ -14,10 +15,11 @@ import com.ftn.sbnz.model.models.enums.SymptomName;
 
 template "SymptomRangeCheck"
 rule "Check Baby for @{message}"
+salience 10
 when
     $e : Examination( @{field} > @{minValue} && @{field} <= @{maxValue} )
 then
-    Symptom s = new Symptom(null, SymptomName.@{symptomName}, 4L, 1);
+    Symptom s = new Symptom(null, SymptomName.@{symptomName}, 4L, @{symptomWeight});
     java.util.List<Symptom> updated = new java.util.ArrayList<>($e.getSymptoms());
     updated.add(s);
 

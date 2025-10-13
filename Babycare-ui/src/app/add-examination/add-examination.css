@@ -1,9 +1,17 @@
+.main-container-ex{
+    display: flex;
+    align-items: center; 
+    height: 100vh; 
+}
+.info-container{
+    width: 35%;
+}
 :host ::ng-deep p-listbox{
     max-width: 200px;
 }
 
 .form-container{
-    width: 50%;
+    width: 60%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -23,4 +31,14 @@
 }
 .mb{
     margin-bottom: 50px;
+}
+.height-info{
+    height: 220px;
+}
+.card-box {
+  border: 1px solid #ccc;
+  padding: 12px;
+  margin: 10px 0;
+  background-color: #f9f9f9;
+  height: fit-content;
 }

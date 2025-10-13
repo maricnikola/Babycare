@@ -1,10 +1,12 @@
 package com.ftn.sbnz.model.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.ftn.sbnz.model.models.enums.ExaminationType;
 import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,7 +18,7 @@ public class Examination {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
-    public LocalDate examDate;
+    public LocalDateTime examDate;
     public ExaminationType examinationType;
     public Double weight;
     public Double height;
@@ -24,7 +26,10 @@ public class Examination {
     public Integer heartRate;
     public Integer respirationRate;
     public Double headCircumference;
+    public Double erythrocytes;
+    public Double crp;
     @ManyToOne
+    @JsonBackReference
     public Baby baby;
     @OneToMany(cascade = CascadeType.PERSIST)
     public List<Symptom> symptoms = new ArrayList<>();

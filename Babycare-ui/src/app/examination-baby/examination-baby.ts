@@ -10,16 +10,17 @@ import { Baby, Gender } from '../model/baby';
 import { BabyService } from '../service/baby.service';
 import { Router } from '@angular/router';
 import { SelectModule } from 'primeng/select';
+import { DiseaseCheck } from "../disease-check/disease-check";
 
 @Component({
   selector: 'app-examination-baby',
-  imports: [SelectModule, CascadeSelectModule, Dialog, ButtonModule, InputTextModule, DatePickerModule, FormsModule, InputNumber],
+  imports: [SelectModule, CascadeSelectModule, Dialog, ButtonModule, 
+    InputTextModule, DatePickerModule, FormsModule, InputNumber, DiseaseCheck],
   providers: [BabyService],
   templateUrl: './examination-baby.html',
   styleUrl: './examination-baby.css'
 })
-export class ExaminationBaby {
-    
+export class ExaminationBaby {    
   constructor(private babyService: BabyService, private router: Router) {}
     firstName!: string;
     lastName!: string;
@@ -85,10 +86,21 @@ export class ExaminationBaby {
    this.visible = false;
   }
 
-    goToAddExamination() {
-      if (this.selectedBabyId) {
-        this.router.navigate(['/addExamination', this.selectedBabyId]);
-      }
-      console.log(this.selectedBabyId);
+  goToAddExamination() {
+    if (this.selectedBabyId) {
+      this.router.navigate(['/addExamination', this.selectedBabyId]);
     }
+    console.log(this.selectedBabyId);
+  }
+  goToMonitoring() {
+    if (this.selectedBabyId) {
+      this.router.navigate(['/monitoring', this.selectedBabyId]);
+    }
+  }
+
+  goToPostVaccination() {
+    if (this.selectedBabyId) {
+      this.router.navigate(['/postVaccination', this.selectedBabyId]);
+    }
+  }
 }
